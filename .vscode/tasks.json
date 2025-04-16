@@ -5,7 +5,7 @@
       "label": "Start Frontend Dev Server",
       "type": "npm",
       "script": "start",
-      "path": "foodpal/frontend/",
+      "path": "frontend/",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
@@ -18,7 +18,7 @@
       "label": "Build Frontend",
       "type": "npm",
       "script": "build",
-      "path": "foodpal/frontend/",
+      "path": "frontend/",
       "group": {
         "kind": "build",
         "isDefault": true
@@ -30,7 +30,7 @@
       "label": "Test Frontend",
       "type": "npm",
       "script": "test",
-      "path": "foodpal/frontend/",
+      "path": "frontend/",
       "problemMatcher": [],
       "detail": "Run React tests"
     },
@@ -49,7 +49,7 @@
         "8000"
       ],
       "options": {
-        "cwd": "${workspaceFolder}/foodpal/backend"
+        "cwd": "${workspaceFolder}/backend"
       },
       "problemMatcher": [],
       "presentation": {
@@ -63,7 +63,7 @@
       "label": "Install Frontend Dependencies",
       "type": "npm",
       "script": "install",
-      "path": "foodpal/frontend/",
+      "path": "frontend/",
       "problemMatcher": [],
       "detail": "Install frontend dependencies"
     },

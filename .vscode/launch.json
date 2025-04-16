@@ -31,7 +31,7 @@
     },
     {
       "name": "Debug Backend (FastAPI)",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "module": "uvicorn",
       "args": [
@@ -42,13 +42,13 @@
         "--port",
         "8000"
       ],
-      "cwd": "${workspaceFolder}/foodpal/backend",
+      "cwd": "${workspaceFolder}/backend",
       "justMyCode": false,
       "presentation": {
         "group": "backend"
       },
       "env": {
-        "PYTHONPATH": "${workspaceFolder}/foodpal/backend",
+        "PYTHONPATH": "${workspaceFolder}/backend",
         "DEBUG": "true",
         "DB_CONNECTION_STRING": "local_development_connection_string"
       }
