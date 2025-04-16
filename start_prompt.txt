@@ -1,8 +1,7 @@
 I want to build a progressive web app in React called FoodPal that functions as a meal planner.
 
 ## Core Requirements
-- PWA architecture for mobile friendliness and offline capabilities
-- Local database storage to function offline
+- PWA architecture for mobile friendliness
 - User authentication with SSO, storing household details of logged users
 - Multi-user household database sharing for collaborative meal planning
 - UI/UX features:

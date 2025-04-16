@@ -1,0 +1,116 @@
+{
+  "app": {
+    "title": "FoodPal",
+    "subtitle": "Pianificazione dei pasti semplificata"
+  },
+  "navigation": {
+    "home": "Home",
+    "meals": "Piano Pasti",
+    "recipes": "Ricette",
+    "ingredients": "Ingredienti",
+    "shopping": "Lista della Spesa",
+    "settings": "Impostazioni"
+  },
+  "auth": {
+    "login": "Accedi",
+    "signup": "Registrati",
+    "logout": "Esci",
+    "profile": "Profilo",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Password Dimenticata?",
+    "rememberMe": "Ricordami",
+    "orContinueWith": "O continua con"
+  },
+  "mealPlanner": {
+    "addMeal": "Aggiungi Pasto",
+    "editMeal": "Modifica Pasto",
+    "deleteMeal": "Elimina Pasto",
+    "mealTypes": {
+      "breakfast": "Colazione",
+      "lunch": "Pranzo",
+      "dinner": "Cena",
+      "snack": "Snack"
+    },
+    "calendar": "Calendario"
+  },
+  "recipes": {
+    "addRecipe": "Aggiungi Ricetta",
+    "editRecipe": "Modifica Ricetta",
+    "deleteRecipe": "Elimina Ricetta",
+    "ingredients": "Ingredienti",
+    "instructions": "Istruzioni",
+    "servings": "Porzioni",
+    "prepTime": "Tempo di Preparazione",
+    "cookTime": "Tempo di Cottura",
+    "totalTime": "Tempo Totale",
+    "difficulty": {
+      "easy": "Facile",
+      "medium": "Media",
+      "hard": "Difficile"
+    },
+    "categories": {
+      "italian": "Italiana",
+      "mexican": "Messicana",
+      "asian": "Asiatica",
+      "vegetarian": "Vegetariana",
+      "vegan": "Vegana",
+      "dessert": "Dessert",
+      "breakfast": "Colazione"
+    }
+  },
+  "ingredients": {
+    "addIngredient": "Aggiungi Ingrediente",
+    "editIngredient": "Modifica Ingrediente",
+    "deleteIngredient": "Elimina Ingrediente",
+    "quantity": "Quantità",
+    "unit": "Unità",
+    "expiryDate": "Data di Scadenza",
+    "storage": {
+      "fridge": "Frigorifero",
+      "freezer": "Congelatore",
+      "pantry": "Dispensa"
+    },
+    "remainingDays": "{{days}} giorni rimanenti",
+    "expired": "Scaduto"
+  },
+  "shopping": {
+    "list": "Lista della Spesa",
+    "addItem": "Aggiungi Articolo",
+    "editItem": "Modifica Articolo",
+    "deleteItem": "Elimina Articolo",
+    "markAsPurchased": "Segna come Acquistato",
+    "clearPurchased": "Cancella Articoli Acquistati",
+    "generateFromMeals": "Genera dai Pasti"
+  },
+  "settings": {
+    "language": "Lingua",
+    "darkMode": "Modalità Scura",
+    "notifications": "Notifiche",
+    "household": {
+      "title": "Famiglia",
+      "members": "Membri",
+      "addMember": "Aggiungi Membro",
+      "removeMember": "Rimuovi Membro",
+      "inviteCode": "Codice di Invito"
+    }
+  },
+  "common": {
+    "save": "Salva",
+    "cancel": "Annulla",
+    "delete": "Elimina",
+    "edit": "Modifica",
+    "add": "Aggiungi",
+    "remove": "Rimuovi",
+    "search": "Cerca",
+    "filter": "Filtra",
+    "sort": "Ordina",
+    "yes": "Sì",
+    "no": "No",
+    "loading": "Caricamento...",
+    "error": "Errore",
+    "success": "Successo",
+    "warning": "Avviso",
+    "info": "Informazione"
+  }
+}

@@ -49,13 +49,17 @@ const darkThemeOptions: ThemeOptions = {
       dark: '#087f23',
     },
     secondary: {
-      main: '#ff9800', // Keep the same secondary color for consistency
+      main: '#ff9800',
       light: '#ffc947',
       dark: '#c66900',
     },
     background: {
       default: '#121212',
       paper: '#1e1e1e',
+    },
+    text: {
+      primary: '#ffffff',
+      secondary: 'rgba(255, 255, 255, 0.7)',
     },
   },
   typography: {

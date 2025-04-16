@@ -16,27 +16,27 @@
           "tasks": [
             {
               "name": "Configure PWA capabilities with service workers",
-              "status": "todo"
+              "status": "done"
             },
             {
               "name": "Setup TypeScript configuration",
-              "status": "todo"
+              "status": "done"
             },
             {
               "name": "Configure Material UI or Tailwind CSS",
-              "status": "todo"
+              "status": "done"
             },
             {
               "name": "Setup Redux or Context API for state management",
-              "status": "todo"
+              "status": "done"
             },
             {
               "name": "Configure testing environment with Jest and React Testing Library",
-              "status": "todo"
+              "status": "done"
             },
             {
               "name": "Setup localization framework for language support (English/Italian)",
-              "status": "todo"
+              "status": "done"
             }
           ]
         },
@@ -44,7 +44,7 @@
           "id": "setup-backend",
           "name": "Backend Setup",
           "description": "Setup FastAPI backend with required dependencies",
-          "status": "todo",
+          "status": "done",
           "tasks": [
             {
               "name": "Initialize FastAPI project structure",
@@ -52,23 +52,23 @@
             },
             {
               "name": "Configure database connections (Azure Cosmos DB)",
-              "status": "todo"
+              "status": "done"
             },
             {
               "name": "Setup authentication integration with Azure AD B2C",
-              "status": "todo"
+              "status": "done"
             },
             {
               "name": "Configure JWT token generation and validation",
-              "status": "todo"
+              "status": "done"
             },
             {
               "name": "Setup API documentation with OpenAPI",
-              "status": "todo"
+              "status": "done"
             },
             {
               "name": "Configure Docker containerization",
-              "status": "todo"
+              "status": "done"
             }
           ]
         }
@@ -135,34 +135,6 @@
               "status": "todo"
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "offline-functionality",
-      "name": "Offline Functionality",
-      "description": "Implement offline capabilities and local storage",
-      "status": "todo",
-      "tasks": [
-        {
-          "name": "Setup IndexedDB for local data caching",
-          "status": "todo"
-        },
-        {
-          "name": "Implement service workers for offline access",
-          "status": "todo"
-        },
-        {
-          "name": "Create sync mechanism between local and cloud databases",
-          "status": "todo"
-        },
-        {
-          "name": "Build conflict resolution strategy for data synchronization",
-          "status": "todo"
-        },
-        {
-          "name": "Implement offline-first data access patterns",
-          "status": "todo"
         }
       ]
     },

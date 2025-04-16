@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "FoodPal",
+  "name": "FoodPal - Meal Planning Made Simple",
   "icons": [
     {
       "src": "favicon.ico",
@@ -16,10 +16,24 @@
       "src": "logo512.png",
       "type": "image/png",
       "sizes": "512x512"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#4caf50",
+  "background_color": "#ffffff",
+  "orientation": "portrait",
+  "categories": ["food", "lifestyle", "productivity"],
+  "description": "A progressive web app for meal planning, recipe management, and household grocery coordination",
+  "dir": "ltr",
+  "lang": "en",
+  "prefer_related_applications": false,
+  "related_applications": []
 }

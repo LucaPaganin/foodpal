@@ -1,0 +1,116 @@
+{
+  "app": {
+    "title": "FoodPal",
+    "subtitle": "Meal Planning Made Simple"
+  },
+  "navigation": {
+    "home": "Home",
+    "meals": "Meal Planner",
+    "recipes": "Recipes",
+    "ingredients": "Ingredients",
+    "shopping": "Shopping List",
+    "settings": "Settings"
+  },
+  "auth": {
+    "login": "Log In",
+    "signup": "Sign Up",
+    "logout": "Log Out",
+    "profile": "Profile",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot Password?",
+    "rememberMe": "Remember Me",
+    "orContinueWith": "Or continue with"
+  },
+  "mealPlanner": {
+    "addMeal": "Add Meal",
+    "editMeal": "Edit Meal",
+    "deleteMeal": "Delete Meal",
+    "mealTypes": {
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "dinner": "Dinner",
+      "snack": "Snack"
+    },
+    "calendar": "Calendar"
+  },
+  "recipes": {
+    "addRecipe": "Add Recipe",
+    "editRecipe": "Edit Recipe",
+    "deleteRecipe": "Delete Recipe",
+    "ingredients": "Ingredients",
+    "instructions": "Instructions",
+    "servings": "Servings",
+    "prepTime": "Prep Time",
+    "cookTime": "Cook Time",
+    "totalTime": "Total Time",
+    "difficulty": {
+      "easy": "Easy",
+      "medium": "Medium",
+      "hard": "Hard"
+    },
+    "categories": {
+      "italian": "Italian",
+      "mexican": "Mexican",
+      "asian": "Asian",
+      "vegetarian": "Vegetarian",
+      "vegan": "Vegan",
+      "dessert": "Dessert",
+      "breakfast": "Breakfast"
+    }
+  },
+  "ingredients": {
+    "addIngredient": "Add Ingredient",
+    "editIngredient": "Edit Ingredient",
+    "deleteIngredient": "Delete Ingredient",
+    "quantity": "Quantity",
+    "unit": "Unit",
+    "expiryDate": "Expiry Date",
+    "storage": {
+      "fridge": "Fridge",
+      "freezer": "Freezer",
+      "pantry": "Pantry"
+    },
+    "remainingDays": "{{days}} days remaining",
+    "expired": "Expired"
+  },
+  "shopping": {
+    "list": "Shopping List",
+    "addItem": "Add Item",
+    "editItem": "Edit Item",
+    "deleteItem": "Delete Item",
+    "markAsPurchased": "Mark as Purchased",
+    "clearPurchased": "Clear Purchased Items",
+    "generateFromMeals": "Generate From Meals"
+  },
+  "settings": {
+    "language": "Language",
+    "darkMode": "Dark Mode",
+    "notifications": "Notifications",
+    "household": {
+      "title": "Household",
+      "members": "Members",
+      "addMember": "Add Member",
+      "removeMember": "Remove Member",
+      "inviteCode": "Invite Code"
+    }
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "remove": "Remove",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "yes": "Yes",
+    "no": "No",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Information"
+  }
+}
