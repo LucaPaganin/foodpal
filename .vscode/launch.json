@@ -1,0 +1,82 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Frontend (Chrome)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/frontend/src",
+      "sourceMapPathOverrides": {
+        "webpack:///src/*": "${webRoot}/*"
+      },
+      "preLaunchTask": "Start Frontend Dev Server",
+      "presentation": {
+        "group": "frontend"
+      }
+    },
+    {
+      "name": "Debug Frontend (Edge)",
+      "type": "msedge",
+      "request": "launch",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/frontend/src",
+      "sourceMapPathOverrides": {
+        "webpack:///src/*": "${webRoot}/*"
+      },
+      "preLaunchTask": "Start Frontend Dev Server",
+      "presentation": {
+        "group": "frontend"
+      }
+    },
+    {
+      "name": "Debug Backend (FastAPI)",
+      "type": "python",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": [
+        "app.main:app",
+        "--reload",
+        "--host",
+        "localhost",
+        "--port",
+        "8000"
+      ],
+      "cwd": "${workspaceFolder}/foodpal/backend",
+      "justMyCode": false,
+      "presentation": {
+        "group": "backend"
+      },
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/foodpal/backend",
+        "DEBUG": "true",
+        "DB_CONNECTION_STRING": "local_development_connection_string"
+      }
+    },
+    {
+      "name": "Debug Full Stack",
+      "type": "node",
+      "request": "launch",
+      "preLaunchTask": "Start Full Stack Dev Environment",
+      "serverReadyAction": {
+        "pattern": "started server on .+, url: (https?://.+)",
+        "uriFormat": "%s",
+        "action": "openExternally"
+      },
+      "presentation": {
+        "group": "fullstack"
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Debug Frontend & Backend",
+      "configurations": ["Debug Backend (FastAPI)", "Debug Frontend (Chrome)"],
+      "stopAll": true,
+      "presentation": {
+        "group": "fullstack",
+        "order": 1
+      }
+    }
+  ]
+}

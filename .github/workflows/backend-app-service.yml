@@ -1,0 +1,61 @@
+# Backend deployment workflow using Azure App Service
+name: Deploy Backend to Azure App Service
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-app-service.yml'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-app-service.yml'
+
+jobs:
+  build_and_deploy:
+    name: Build and Deploy Backend
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Log in to Azure Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./backend
+          push: true
+          tags: ${{ secrets.ACR_LOGIN_SERVER }}/foodpal-backend:${{ github.sha }}
+          file: ./backend/Dockerfile
+          cache-from: type=registry,ref=${{ secrets.ACR_LOGIN_SERVER }}/foodpal-backend:latest
+          cache-to: type=inline
+      
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'foodpal-backend'
+          images: ${{ secrets.ACR_LOGIN_SERVER }}/foodpal-backend:${{ github.sha }}
+      
+      - name: Tag image as latest
+        run: |
+          az acr repository update --name ${{ secrets.ACR_NAME }} --image foodpal-backend:${{ github.sha }} --tags latest

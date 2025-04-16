@@ -1,0 +1,58 @@
+I want to build a progressive web app in React called FoodPal that functions as a meal planner.
+
+## Core Requirements
+- PWA architecture for mobile friendliness and offline capabilities
+- Local database storage to function offline
+- User authentication with SSO, storing household details of logged users
+- Multi-user household database sharing for collaborative meal planning
+- UI/UX features:
+  - Calendar interface for meal planning and recording
+  - Language switcher (at least English and Italian)
+  - Dark/light mode toggle
+  - User profiles for households with multiple users
+
+## Main Features
+1. **Meal Planning**
+   - Plan future meals on a weekly calendar
+   - Record meals that have already been consumed
+   - Rate consumed meals
+   - Meal categorization (breakfast, lunch, dinner, snacks)
+
+2. **Ingredient Management**
+   - Track ingredients in fridge and pantry with quantities
+   - Track expiration dates and provide alerts for food about to expire
+   - Automatically deduct ingredients when meals are recorded (prioritize fridge over pantry)
+   - Alert when ingredients are missing for planned/recorded meals
+   - Barcode scanning for adding products
+
+3. **Recipe Management**
+   - Create and save recipes with ingredient quantities
+   - Search functionality for recipes and ingredients
+   - Meal suggestion based on available ingredients
+   - Search recipes online and save them to the app's recipe list
+   - Nutritional information tracking
+
+4. **Shopping & Planning Tools**
+   - Generate shopping lists based on planned meals and current inventory
+   - Track food waste statistics
+   - View meal history with date filtering and calendar visualization
+   - Export/import functionality for recipes and meal plans
+
+## Technical Specifications
+- React 18+ with TypeScript
+- State management: Redux or Context API
+- Backend architecture:
+  - FastAPI backend for database security and business logic
+  - RESTful API design with OpenAPI documentation
+  - Containerized with Docker for easy deployment
+- Shared cloud database with offline capability:
+  - Cloud database: Azure Cosmos DB (serverless mode) with JavaScript SDK (@azure/cosmos)
+  - Database interaction through FastAPI backend for improved security
+  - Local caching with IndexedDB for offline functionality
+- UI framework: Material UI or Tailwind CSS
+- PWA features: service workers, offline caching, push notifications
+- Testing framework: Jest with React Testing Library
+- Authentication services integration:
+  - Azure AD B2C for SSO
+  - Google OAuth integration
+- Sync capabilities with cloud storage when online
