@@ -36,6 +36,26 @@ const LoginPage: React.FC = () => {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    try {
+      dispatch(loginStart());
+      await oidcAuthService.login('google');
+    } catch (error) {
+      console.error('Google login error:', error);
+      dispatch(loginFailure(error instanceof Error ? error.message : 'Google login failed'));
+    }
+  };
+
+  const handleMicrosoftLogin = async () => {
+    try {
+      dispatch(loginStart());
+      await oidcAuthService.login('microsoft');
+    } catch (error) {
+      console.error('Microsoft login error:', error);
+      dispatch(loginFailure(error instanceof Error ? error.message : 'Microsoft login failed'));
+    }
+  };
+
   return (
     <Container component="main" maxWidth="xs">
       <Paper elevation={3} sx={{ p: 4, mt: 8 }}>
@@ -69,6 +89,33 @@ const LoginPage: React.FC = () => {
             >
               {loading ? <CircularProgress size={24} /> : t('auth.login')}
             </Button>
+            
+            <Divider sx={{ my: 2 }}>
+              <Typography variant="body2" color="text.secondary">
+                {t('auth.orContinueWith')}
+              </Typography>
+            </Divider>
+            
+            <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+              <Button
+                fullWidth
+                variant="outlined"
+                startIcon={<GoogleIcon />}
+                onClick={handleGoogleLogin}
+                disabled={loading}
+              >
+                Google
+              </Button>
+              <Button
+                fullWidth
+                variant="outlined"
+                startIcon={<MicrosoftIcon />}
+                onClick={handleMicrosoftLogin}
+                disabled={loading}
+              >
+                Microsoft
+              </Button>
+            </Stack>
             
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', mt: 1 }}>
               <Link component={RouterLink} to="/signup" variant="body2">

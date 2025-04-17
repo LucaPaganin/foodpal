@@ -1,6 +1,6 @@
 // Authentication configuration
 export const authConfig = {
-  authority: process.env.REACT_APP_AUTH_AUTHORITY || 'https://foodpalauth.b2clogin.com/foodpalauth.onmicrosoft.com/B2C_1_signupsignin/v2.0',
+  authority: process.env.REACT_APP_AUTH_AUTHORITY || 'https://lucapb2c.b2clogin.com/lucapb2c.onmicrosoft.com/B2C_1_signupsignin/v2.0',
   client_id: process.env.REACT_APP_AUTH_CLIENT_ID || '11111111-1111-1111-1111-111111111111',
   redirect_uri: process.env.REACT_APP_AUTH_REDIRECT_URI || `${window.location.origin}/auth/callback`,
   post_logout_redirect_uri: process.env.REACT_APP_AUTH_POST_LOGOUT_REDIRECT_URI || window.location.origin,
@@ -23,10 +23,10 @@ export const authConfig = {
   
   // Metadata configuration
   metadata: {
-    issuer: `https://foodpalauth.b2clogin.com/foodpalauth.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1_signupsignin`,
-    authorization_endpoint: `https://foodpalauth.b2clogin.com/foodpalauth.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1_signupsignin`,
-    token_endpoint: `https://foodpalauth.b2clogin.com/foodpalauth.onmicrosoft.com/oauth2/v2.0/token?p=B2C_1_signupsignin`,
-    jwks_uri: `https://foodpalauth.b2clogin.com/foodpalauth.onmicrosoft.com/discovery/v2.0/keys?p=B2C_1_signupsignin`,
-    end_session_endpoint: `https://foodpalauth.b2clogin.com/foodpalauth.onmicrosoft.com/oauth2/v2.0/logout?p=B2C_1_signupsignin`
+    issuer: `https://lucapb2c.b2clogin.com/lucapb2c.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1_signupsignin`,
+    authorization_endpoint: `https://lucapb2c.b2clogin.com/lucapb2c.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1_signupsignin`,
+    token_endpoint: `https://lucapb2c.b2clogin.com/lucapb2c.onmicrosoft.com/oauth2/v2.0/token?p=B2C_1_signupsignin`,
+    jwks_uri: `https://lucapb2c.b2clogin.com/lucapb2c.onmicrosoft.com/discovery/v2.0/keys?p=B2C_1_signupsignin`,
+    end_session_endpoint: `https://lucapb2c.b2clogin.com/lucapb2c.onmicrosoft.com/oauth2/v2.0/logout?p=B2C_1_signupsignin`
   }
 };

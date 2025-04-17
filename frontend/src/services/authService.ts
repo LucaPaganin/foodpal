@@ -146,7 +146,7 @@ const authService = {
    */
   initiateAzureLogin() {
     // Azure AD B2C configuration
-    const tenantName = process.env.REACT_APP_AZURE_B2C_TENANT || 'foodpalauth';
+    const tenantName = process.env.REACT_APP_AZURE_B2C_TENANT || 'lucapb2c';
     const clientId = process.env.REACT_APP_AZURE_B2C_CLIENT_ID || '11111111-1111-1111-1111-111111111111';
     const signInPolicy = process.env.REACT_APP_AZURE_B2C_SIGNIN_POLICY || 'B2C_1_signupsignin';
     const redirectUri = encodeURIComponent(window.location.origin + '/auth/azure/callback');

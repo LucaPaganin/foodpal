@@ -96,9 +96,16 @@ class OidcAuthService {
   
   /**
    * Initiate the login process
+   * @param provider Optional provider name ('google' or 'microsoft') for specific SSO flows
    */
-  public login(): Promise<void> {
-    return this.userManager.signinRedirect();
+  public login(provider?: 'google' | 'microsoft'): Promise<void> {
+    // Add provider-specific extra parameters if provider is specified
+    const extraQueryParams = provider ? { 
+      ...authConfig.extraQueryParams,
+      identity_provider: provider 
+    } : authConfig.extraQueryParams;
+    
+    return this.userManager.signinRedirect({ extraQueryParams });
   }
   
   /**
