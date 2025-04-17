@@ -17,16 +17,22 @@ const axiosInstance = axios.create({
 
 // Add an interceptor to automatically add auth token to requests
 axiosInstance.interceptors.request.use(
-  (config): any => {
+  (config) => {
     const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
     if (token && config.headers) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }
     return config;
   },
-  (error: any) => {
+  (error) => {
     return Promise.reject(error);
   }
+);
+
+// Add response interceptor for consistency
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => Promise.reject(error)
 );
 
 // Types

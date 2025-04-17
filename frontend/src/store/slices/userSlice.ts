@@ -25,6 +25,9 @@ export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
     loginStart: (state) => {
       state.loading = true;
       state.error = null;
@@ -105,6 +108,7 @@ export const userSlice = createSlice({
 });
 
 export const {
+  setLoading,
   loginStart,
   loginSuccess,
   loginFailure,

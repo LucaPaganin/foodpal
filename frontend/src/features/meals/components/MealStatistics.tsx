@@ -12,11 +12,7 @@ import {
   Card,
   CardContent,
   Divider,
-  IconButton,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem
+  IconButton
 } from '@mui/material';
 import {
   ChevronLeft as ChevronLeftIcon,

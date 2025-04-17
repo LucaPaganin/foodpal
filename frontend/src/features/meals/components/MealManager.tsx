@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { 
   Box, 
-  Grid, 
+  Grid as MuiGrid, 
   Paper,
   Typography,
   Button,
@@ -25,6 +25,7 @@ import {
   Tooltip,
   CircularProgress
 } from '@mui/material';
+import { GridWrapper as Grid } from '../../../components/ui/GridWrapper';
 import { 
   Search as SearchIcon,
   Add as AddIcon,
@@ -112,7 +113,7 @@ const MealManager: React.FC = () => {
   
   // Handle deleting a meal
   const handleDeleteMeal = (mealId: string) => {
-    if (window.confirm(t('Are you sure you want to delete this meal?'))) {
+    if (window.confirm(String(t('Are you sure you want to delete this meal?')))) {
       dispatch(deleteMeal(mealId));
     }
   };
@@ -178,7 +179,7 @@ const MealManager: React.FC = () => {
         </Box>
         
         <Grid container spacing={2} sx={{ mb: 3 }}>
-          <Grid item xs={12} md={6}>
+          <Box>
             <TextField
               fullWidth
               variant="outlined"
@@ -193,8 +194,8 @@ const MealManager: React.FC = () => {
                 )
               }}
             />
-          </Grid>
-          <Grid item xs={6} md={3}>
+          </Box>
+          <Box>
             <FormControl fullWidth>
               <InputLabel>{t('Filter by Type')}</InputLabel>
               <Select
@@ -209,8 +210,8 @@ const MealManager: React.FC = () => {
                 <MenuItem value="snack">{t('snack')}</MenuItem>
               </Select>
             </FormControl>
-          </Grid>
-          <Grid item xs={6} md={3}>
+          </Box>
+          <Box>
             <FormControl fullWidth>
               <InputLabel>{t('Filter by Category')}</InputLabel>
               <Select
@@ -231,7 +232,7 @@ const MealManager: React.FC = () => {
                 <MenuItem value="quick">{t('quick')}</MenuItem>
               </Select>
             </FormControl>
-          </Grid>
+          </Box>
         </Grid>
         
         {loading ? (
@@ -245,7 +246,7 @@ const MealManager: React.FC = () => {
         ) : (
           <Grid container spacing={2}>
             {filteredMeals.map((meal) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={meal.id}>
+              <Box>
                 <Card>
                   <CardContent>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -309,7 +310,7 @@ const MealManager: React.FC = () => {
                       <IconButton 
                         size="small" 
                         onClick={() => handleOpenEditDialog(meal)}
-                        aria-label={t('Edit Meal')}
+                        aria-label={String(t('Edit Meal'))}
                       >
                         <EditIcon />
                       </IconButton>
@@ -318,14 +319,14 @@ const MealManager: React.FC = () => {
                       <IconButton 
                         size="small" 
                         onClick={() => handleDeleteMeal(meal.id)}
-                        aria-label={t('Delete Meal')}
+                        aria-label={String(t('Delete Meal'))}
                       >
                         <DeleteIcon />
                       </IconButton>
                     </Tooltip>
                   </CardActions>
                 </Card>
-              </Grid>
+              </Box>
             ))}
           </Grid>
         )}
@@ -344,7 +345,7 @@ const MealManager: React.FC = () => {
         
         <DialogContent>
           <Grid container spacing={2} sx={{ mt: 0.5 }}>
-            <Grid item xs={12}>
+            <Box>
               <TextField
                 fullWidth
                 label={t('Meal Name')}
@@ -352,9 +353,9 @@ const MealManager: React.FC = () => {
                 onChange={(e) => setMealName(e.target.value)}
                 required
               />
-            </Grid>
+            </Box>
             
-            <Grid item xs={12} sm={6}>
+            <Box>
               <FormControl fullWidth>
                 <InputLabel>{t('Meal Type')}</InputLabel>
                 <Select
@@ -370,9 +371,9 @@ const MealManager: React.FC = () => {
                   <MenuItem value="other">{t('other')}</MenuItem>
                 </Select>
               </FormControl>
-            </Grid>
+            </Box>
             
-            <Grid item xs={12} sm={6}>
+            <Box>
               <FormControl fullWidth>
                 <InputLabel>{t('Categories')}</InputLabel>
                 <Select
@@ -405,9 +406,9 @@ const MealManager: React.FC = () => {
                   <MenuItem value="custom">{t('custom')}</MenuItem>
                 </Select>
               </FormControl>
-            </Grid>
+            </Box>
             
-            <Grid item xs={12} sm={6}>
+            <Box>
               <TextField
                 fullWidth
                 type="number"
@@ -418,9 +419,9 @@ const MealManager: React.FC = () => {
                   inputProps: { min: 1 }
                 }}
               />
-            </Grid>
+            </Box>
             
-            <Grid item xs={12} sm={6}>
+            <Box>
               <TextField
                 fullWidth
                 type="number"
@@ -431,9 +432,9 @@ const MealManager: React.FC = () => {
                   inputProps: { min: 0 }
                 }}
               />
-            </Grid>
+            </Box>
             
-            <Grid item xs={12} sm={6}>
+            <Box>
               <TextField
                 fullWidth
                 type="number"
@@ -444,18 +445,18 @@ const MealManager: React.FC = () => {
                   inputProps: { min: 0 }
                 }}
               />
-            </Grid>
+            </Box>
             
-            <Grid item xs={12} sm={6} sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box>
               <Typography component="legend" sx={{ mr: 2 }}>
                 {t('Favorite')}
               </Typography>
               <IconButton onClick={() => setIsFavorite(!isFavorite)}>
                 {isFavorite ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
               </IconButton>
-            </Grid>
+            </Box>
             
-            <Grid item xs={12}>
+            <Box>
               <TextField
                 fullWidth
                 label={t('Notes')}
@@ -464,7 +465,7 @@ const MealManager: React.FC = () => {
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
               />
-            </Grid>
+            </Box>
           </Grid>
         </DialogContent>
         

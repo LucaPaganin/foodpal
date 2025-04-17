@@ -25,6 +25,19 @@ export type MealRating = 1 | 2 | 3 | 4 | 5;
 
 export type MealPlanStatus = 'planned' | 'prepared' | 'skipped' | 'replaced';
 
+// Statistics interface
+export interface MealStatistics {
+  totalMealsPlanned: number;
+  adherenceRate: string;
+  averageMealRating: number;
+  totalRatings: number;
+  topCategory?: MealCategory;
+  topCategoryCount: number;
+  favoriteCount: number;
+  topFavoriteMeal?: string;
+}
+
+// Existing interfaces
 export interface Meal {
   id: string;
   name: string;
@@ -77,6 +90,7 @@ interface MealsState {
   selectedWeek: string | null;
   loading: boolean;
   error: string | null;
+  statistics?: MealStatistics; // Add statistics to the state
 }
 
 const initialState: MealsState = {
@@ -87,6 +101,7 @@ const initialState: MealsState = {
   selectedWeek: null,
   loading: false,
   error: null,
+  statistics: undefined,
 };
 
 // Async thunks for API calls
@@ -96,6 +111,36 @@ export const fetchMeals = createAsyncThunk(
     try {
       const axiosInstance = oidcAuthService.getAxiosInstance();
       const response = await axiosInstance.get('/meals');
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const fetchMealStatistics = createAsyncThunk(
+  'meals/fetchMealStatistics',
+  async (dateRange: { startDate: string; endDate: string }, { rejectWithValue }) => {
+    try {
+      const axiosInstance = oidcAuthService.getAxiosInstance();
+      const response = await axiosInstance.get(
+        `/meals/statistics?start_date=${dateRange.startDate}&end_date=${dateRange.endDate}`
+      );
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const fetchMealPlanForPeriod = createAsyncThunk(
+  'meals/fetchMealPlanForPeriod',
+  async (dateRange: { startDate: string; endDate: string }, { rejectWithValue }) => {
+    try {
+      const axiosInstance = oidcAuthService.getAxiosInstance();
+      const response = await axiosInstance.get(
+        `/meal-plans?start_date=${dateRange.startDate}&end_date=${dateRange.endDate}`
+      );
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || error.message);
@@ -188,7 +233,7 @@ export const deleteMealPlanEntry = createAsyncThunk(
   async (id: string, { rejectWithValue }) => {
     try {
       const axiosInstance = oidcAuthService.getAxiosInstance();
-      await axiosInstance.delete(`/meal-plans/${id}`);
+      await axiosInstance.delete(`/meals/${id}`);
       return id;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || error.message);
@@ -237,6 +282,34 @@ export const mealsSlice = createSlice({
       .addCase(fetchMeals.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string || 'Failed to fetch meals';
+      })
+      
+      // Fetch Meal Statistics
+      .addCase(fetchMealStatistics.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchMealStatistics.fulfilled, (state, action) => {
+        state.loading = false;
+        state.statistics = action.payload as MealStatistics;
+      })
+      .addCase(fetchMealStatistics.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string || 'Failed to fetch meal statistics';
+      })
+      
+      // Fetch Meal Plan For Period (this one handles data the same way as fetchMealPlan)
+      .addCase(fetchMealPlanForPeriod.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchMealPlanForPeriod.fulfilled, (state, action) => {
+        state.loading = false;
+        state.mealPlan = action.payload as MealPlanEntry[];
+      })
+      .addCase(fetchMealPlanForPeriod.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string || 'Failed to fetch meal plan for period';
       })
       
       // Fetch Meal Plan

@@ -10,14 +10,10 @@ import ProtectedRoute from '../components/auth/ProtectedRoute';
 import oidcAuthService from '../services/oidcAuthService';
 
 // Mock oidc-client-ts
-jest.mock('../services/oidcAuthService', () => ({
-  handleLoginCallback: jest.fn(),
-  getUser: jest.fn(),
-  isAuthenticated: jest.fn(),
-  mapOidcUserToAppUser: jest.fn(),
-  login: jest.fn(),
-  logout: jest.fn(),
-}));
+jest.mock('../services/oidcAuthService');
+
+// Create typed mocks for TypeScript
+const mockedOidcAuthService = oidcAuthService as jest.Mocked<typeof oidcAuthService>;
 
 // Create a test store
 const createTestStore = (initialState = {}) => {
@@ -54,8 +50,8 @@ describe('Authentication Flow', () => {
       fullName: 'Test User',
     };
     
-    oidcAuthService.handleLoginCallback.mockResolvedValue(mockUser);
-    oidcAuthService.mapOidcUserToAppUser.mockReturnValue(mockAppUser);
+    mockedOidcAuthService.handleLoginCallback.mockResolvedValue(mockUser as any);
+    mockedOidcAuthService.mapOidcUserToAppUser.mockReturnValue(mockAppUser);
     
     const store = createTestStore();
     
@@ -76,7 +72,7 @@ describe('Authentication Flow', () => {
     
     // Wait for redirect after successful auth
     await waitFor(() => {
-      expect(oidcAuthService.handleLoginCallback).toHaveBeenCalled();
+      expect(mockedOidcAuthService.handleLoginCallback).toHaveBeenCalled();
       
       // Check that Redux store was updated
       const state = store.getState();
@@ -87,7 +83,7 @@ describe('Authentication Flow', () => {
 
   test('AuthCallback handles authentication failure', async () => {
     // Mock failed auth
-    oidcAuthService.handleLoginCallback.mockRejectedValue(new Error('Auth failed'));
+    mockedOidcAuthService.handleLoginCallback.mockRejectedValue(new Error('Auth failed'));
     
     const store = createTestStore();
     
@@ -108,7 +104,7 @@ describe('Authentication Flow', () => {
 
   test('ProtectedRoute redirects unauthenticated users to login', async () => {
     // Mock unauthenticated state
-    oidcAuthService.isAuthenticated.mockResolvedValue(false);
+    mockedOidcAuthService.isAuthenticated.mockResolvedValue(false);
     
     const store = createTestStore({
       user: { isAuthenticated: false, user: null, loading: false, error: null, households: [] }
@@ -141,7 +137,7 @@ describe('Authentication Flow', () => {
 
   test('ProtectedRoute allows authenticated users', async () => {
     // Mock authenticated state
-    oidcAuthService.isAuthenticated.mockResolvedValue(true);
+    mockedOidcAuthService.isAuthenticated.mockResolvedValue(true);
     
     const store = createTestStore({
       user: { 

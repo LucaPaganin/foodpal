@@ -20,8 +20,7 @@ import { rateMeal } from '../../../store/slices/mealsSlice';
 interface MealRatingDialogProps {
   open: boolean;
   onClose: () => void;
-  mealId: string;
-  mealName: string;
+  meal: any;
 }
 
 const labels: { [index: string]: string } = {
@@ -35,8 +34,7 @@ const labels: { [index: string]: string } = {
 const MealRatingDialog: React.FC<MealRatingDialogProps> = ({
   open,
   onClose,
-  mealId,
-  mealName
+  meal
 }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
@@ -50,10 +48,10 @@ const MealRatingDialog: React.FC<MealRatingDialogProps> = ({
   };
 
   const handleSubmit = async () => {
-    if (!rating) return;
+    if (!rating || !meal) return;
     
     await dispatch(rateMeal({
-      mealId,
+      mealId: meal.id,
       rating: rating as 1 | 2 | 3 | 4 | 5,
       comments: comments.trim() || undefined,
       dateConsumed: new Date().toISOString(),
@@ -71,7 +69,7 @@ const MealRatingDialog: React.FC<MealRatingDialogProps> = ({
       
       <DialogContent>
         <Typography variant="subtitle1" component="div" sx={{ mb: 2 }}>
-          {mealName}
+          {meal?.name}
         </Typography>
         
         <Box

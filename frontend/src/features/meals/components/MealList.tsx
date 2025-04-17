@@ -170,7 +170,7 @@ const MealList: React.FC = () => {
                   <IconButton 
                     onClick={() => handleToggleFavorite(meal)}
                     color={meal.isFavorite ? 'error' : 'default'}
-                    aria-label={meal.isFavorite ? t('meals.unfavorite') : t('meals.favorite')}
+                    aria-label={String(meal.isFavorite ? t('meals.unfavorite') : t('meals.favorite'))}
                   >
                     {meal.isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
                   </IconButton>
@@ -248,14 +248,14 @@ const MealList: React.FC = () => {
                 <Box sx={{ flexGrow: 1 }} />
                 <IconButton 
                   size="small" 
-                  aria-label={t('common.edit')}
+                  aria-label={String(t('common.edit'))}
                   onClick={() => {/* TODO: Implement edit */}}
                 >
                   <EditIcon fontSize="small" />
                 </IconButton>
                 <IconButton 
                   size="small" 
-                  aria-label={t('common.delete')}
+                  aria-label={String(t('common.delete'))}
                   onClick={() => handleOpenDeleteDialog(meal)}
                 >
                   <DeleteIcon fontSize="small" />

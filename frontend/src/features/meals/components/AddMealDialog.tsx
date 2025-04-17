@@ -91,8 +91,9 @@ const AddMealDialog: React.FC<AddMealDialogProps> = ({
       dispatch(createMeal(newMeal))
         .unwrap()
         .then((createdMeal) => {
+          const meal = createdMeal as { id: string };
           dispatch(addMealToPlanner({
-            mealId: createdMeal.id,
+            mealId: meal.id,
             plannedDate: format(date, 'yyyy-MM-dd'),
             mealType,
             servingCount,
@@ -185,7 +186,6 @@ const AddMealDialog: React.FC<AddMealDialogProps> = ({
               renderTags={(value, getTagProps) =>
                 value.map((option, index) => (
                   <Chip 
-                    key={option}
                     label={t(`meals.categories.${option}`)} 
                     {...getTagProps({ index })} 
                   />
@@ -196,10 +196,10 @@ const AddMealDialog: React.FC<AddMealDialogProps> = ({
             <TextField
               label={t('meals.customCategories')}
               fullWidth
-              placeholder={t('meals.customCategoriesPlaceholder')}
+              placeholder={t('meals.customCategoriesPlaceholder') || ''}
               value={customCategories.join(', ')}
               onChange={(e) => setCustomCategories(e.target.value ? e.target.value.split(',').map(s => s.trim()) : [])}
-              helperText={t('meals.customCategoriesHelp')}
+              helperText={t('meals.customCategoriesHelp') || ''}
             />
 
             <Box sx={{ display: 'flex', gap: 2 }}>

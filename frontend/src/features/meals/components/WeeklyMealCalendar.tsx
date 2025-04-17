@@ -9,11 +9,6 @@ import {
   Typography, 
   Button, 
   IconButton, 
-  Tooltip,
-  Card,
-  CardContent,
-  CardActions,
-  Chip,
   Stack
 } from '@mui/material';
 import { 
@@ -118,7 +113,7 @@ const WeeklyMealCalendar: React.FC = () => {
           {t('meals.weeklyPlan')}
         </Typography>
         <Box>
-          <IconButton onClick={handlePrevWeek} aria-label={t('common.previousWeek')}>
+          <IconButton onClick={handlePrevWeek} aria-label={String(t('common.previousWeek'))}>
             <ChevronLeftIcon />
           </IconButton>
           <Button 
@@ -128,7 +123,7 @@ const WeeklyMealCalendar: React.FC = () => {
           >
             {t('common.today')}
           </Button>
-          <IconButton onClick={handleNextWeek} aria-label={t('common.nextWeek')}>
+          <IconButton onClick={handleNextWeek} aria-label={String(t('common.nextWeek'))}>
             <ChevronRightIcon />
           </IconButton>
         </Box>
