@@ -12,6 +12,7 @@ import AuthCallback from './pages/auth/AuthCallback';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import AuthInitializer from './components/auth/AuthInitializer';
 import HomePage from './pages/HomePage';
+import MealPlanningPage from './features/meals/pages/MealPlanningPage';
 import './App.css';
 
 // App wrapped with Redux Provider
@@ -83,7 +84,7 @@ function AppContent() {
                   <MainLayout>
                     <Routes>
                       <Route path="/" element={<HomePage />} />
-                      <Route path="/meals" element={<div>Meal Planner</div>} />
+                      <Route path="/meals" element={<MealPlanningPage />} />
                       <Route path="/recipes" element={<div>Recipe Management</div>} />
                       <Route path="/ingredients" element={<div>Ingredient Management</div>} />
                       <Route path="/shopping" element={<div>Shopping List</div>} />

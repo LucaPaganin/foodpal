@@ -6,7 +6,7 @@
       "id": "setup",
       "name": "Project Setup",
       "description": "Initial project configuration and setup",
-      "status": "todo",
+      "status": "done",
       "subtasks": [
         {
           "id": "setup-frontend",
@@ -78,7 +78,7 @@
       "id": "authentication",
       "name": "Authentication System",
       "description": "Implement user authentication and household management",
-      "status": "to_be_tested",
+      "status": "done",
       "subtasks": [
         {
           "id": "auth-frontend",
@@ -142,7 +142,7 @@
       "id": "meal-planning",
       "name": "Meal Planning Feature",
       "description": "Implement meal planning functionality",
-      "status": "todo",
+      "status": "to_be_tested",
       "subtasks": [
         {
           "id": "meal-models",
