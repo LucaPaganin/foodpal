@@ -133,7 +133,7 @@ const WeeklyMealCalendar: React.FC = () => {
       <Paper elevation={2} sx={{ p: 2 }}>
         <Grid container spacing={1}>
           {/* Header row with day names */}
-          <Grid item xs={2}>
+          <Grid size={{ xs: 2 }}>
             <Box sx={{ height: 50, display: 'flex', alignItems: 'center', pl: 1 }}>
               <Typography variant="subtitle2" color="textSecondary">
                 {t('meals.mealTypes')}
@@ -141,7 +141,7 @@ const WeeklyMealCalendar: React.FC = () => {
             </Box>
           </Grid>
           {daysOfWeek.map((day, index) => (
-            <Grid item xs key={index}>
+            <Grid size={{xs: 1}} key={index}>
               <Box 
                 sx={{ 
                   height: 50, 
@@ -168,7 +168,7 @@ const WeeklyMealCalendar: React.FC = () => {
           {/* Meal type rows */}
           {mealTypes.map((mealType) => (
             <React.Fragment key={mealType}>
-              <Grid item xs={2}>
+              <Grid size={{ xs: 2 }}>
                 <Box sx={{ 
                   height: '100%', 
                   display: 'flex', 
@@ -187,7 +187,7 @@ const WeeklyMealCalendar: React.FC = () => {
                 const mealsForSlot = getMealsForSlot(day, mealType);
                 
                 return (
-                  <Grid item xs key={`${mealType}-${dayIndex}`}>
+                  <Grid size={{xs: 1}} key={`${mealType}-${dayIndex}`}>
                     <Paper 
                       elevation={0}
                       sx={{ 

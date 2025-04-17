@@ -251,9 +251,9 @@ const MealStatistics: React.FC = () => {
       {viewType === 'summary' && (
         <Grid container spacing={3}>
           {/* Summary Cards */}
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <Card>
                   <CardContent>
                     <Typography color="text.secondary" gutterBottom>
@@ -269,7 +269,7 @@ const MealStatistics: React.FC = () => {
                 </Card>
               </Grid>
               
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <Card>
                   <CardContent>
                     <Typography color="text.secondary" gutterBottom>
@@ -288,7 +288,7 @@ const MealStatistics: React.FC = () => {
                 </Card>
               </Grid>
               
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <Card>
                   <CardContent>
                     <Typography color="text.secondary" gutterBottom>
@@ -304,7 +304,7 @@ const MealStatistics: React.FC = () => {
                 </Card>
               </Grid>
               
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <Card>
                   <CardContent>
                     <Typography color="text.secondary" gutterBottom>
@@ -326,7 +326,7 @@ const MealStatistics: React.FC = () => {
           </Grid>
           
           {/* Charts */}
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Paper sx={{ p: 2 }}>
               <Typography variant="h6" gutterBottom>
                 {t('meals.statistics.mealTypeDistribution')}
@@ -335,7 +335,7 @@ const MealStatistics: React.FC = () => {
             </Paper>
           </Grid>
           
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Paper sx={{ p: 2 }}>
               <Typography variant="h6" gutterBottom>
                 {t('meals.statistics.planStatus')}
@@ -344,7 +344,7 @@ const MealStatistics: React.FC = () => {
             </Paper>
           </Grid>
           
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <Paper sx={{ p: 2 }}>
               <Typography variant="h6" gutterBottom>
                 {t('meals.statistics.categoryDistribution')}
@@ -358,7 +358,7 @@ const MealStatistics: React.FC = () => {
       {/* Trends View */}
       {viewType === 'trends' && (
         <Grid container spacing={3}>
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <Paper sx={{ p: 2 }}>
               <Typography variant="h6" gutterBottom>
                 {t('meals.statistics.ratingTrend')}
@@ -367,7 +367,7 @@ const MealStatistics: React.FC = () => {
             </Paper>
           </Grid>
           
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <Paper sx={{ p: 2 }}>
               <Typography variant="h6" gutterBottom>
                 {t('meals.statistics.adherenceTrend')}
@@ -381,7 +381,7 @@ const MealStatistics: React.FC = () => {
       {/* Achievements View */}
       {viewType === 'achievements' && (
         <Grid container spacing={3}>
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <Paper sx={{ p: 2 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <AchievementIcon color="primary" sx={{ mr: 1 }} />

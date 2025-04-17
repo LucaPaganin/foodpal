@@ -192,8 +192,7 @@ const MealPlanCard: React.FC<MealPlanCardProps> = ({ mealPlanEntry }) => {
         <MealRatingDialog
           open={ratingDialogOpen}
           onClose={() => setRatingDialogOpen(false)}
-          mealId={meal.id}
-          mealName={meal.name}
+          meal={meal}
         />
       )}
     </>
