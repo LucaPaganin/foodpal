@@ -8,7 +8,7 @@ import { toggleDarkMode, setOnlineStatus } from './store/slices/uiSlice';
 import MainLayout from './components/layout/MainLayout';
 import LoginPage from './pages/auth/LoginPage';
 import SignupPage from './pages/auth/SignupPage';
-import AzureCallback from './pages/auth/AzureCallback';
+import AuthCallback from './pages/auth/AuthCallback';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import AuthInitializer from './components/auth/AuthInitializer';
 import './App.css';
@@ -74,7 +74,7 @@ function AppContent() {
               {/* Auth pages without MainLayout */}
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
-              <Route path="/auth/azure/callback" element={<AzureCallback />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
               
               {/* All other pages with MainLayout and protection */}
               <Route path="/" element={

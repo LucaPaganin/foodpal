@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Box, Container, AppBar, Toolbar, Typography, useTheme } from '@mui/material';
 import ThemeToggle from '../ui/ThemeToggle';
 import LanguageSwitcher from '../ui/LanguageSwitcher';
+import UserDisplay from '../auth/UserDisplay';
 import { useTranslation } from 'react-i18next';
 
 interface MainLayoutProps {
@@ -21,6 +22,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
           </Typography>
           <LanguageSwitcher />
           <ThemeToggle />
+          <UserDisplay />
         </Toolbar>
       </AppBar>
       <Container component="main" sx={{ 
