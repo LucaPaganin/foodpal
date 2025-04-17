@@ -4,8 +4,10 @@
     {
       "label": "Start CosmosDB Emulator",
       "type": "shell",
-      "command": "docker-compose",
+      "command": "sudo",
       "args": [
+        "docker",
+        "compose",
         "up",
         "-d",
         "cosmos-db-emulator"
