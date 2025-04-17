@@ -1,209 +1,181 @@
-"""Authentication API endpoints."""
-from datetime import timedelta
-from typing import Any, Dict
-
-from fastapi import APIRouter, Body, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
-
-from app.core.auth import (
-    create_access_token, 
-    get_current_user,
-    get_password_hash,
-    verify_password
-)
-from app.core.azure_auth import exchange_auth_code as azure_exchange_code
-from app.core.azure_auth import verify_azure_token
-from app.core.google_auth import verify_google_token
+from typing import Optional
+from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi.responses import JSONResponse, RedirectResponse
+from pydantic import BaseModel
+from app.core.oidc import oauth, get_token_data, validate_google_token, TokenData
 from app.core.config import settings
-from app.db.cosmos_db import get_db
-from app.models.user import UserCreate, UserInDB, UserResponse
-from app.schemas.token import Token
+from app.models.user import User
+import jwt
+import time
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    
+class CodeRequest(BaseModel):
+    code: str
+    
+class GoogleTokenRequest(BaseModel):
+    id_token: str
 
-@router.post("/token", response_model=Token)
-async def login_for_access_token(
-    form_data: OAuth2PasswordRequestForm = Depends(),
-    db = Depends(get_db)
-) -> Dict[str, str]:
-    """OAuth2 compatible token login, get an access token for future requests."""
-    # Find the user in the database
-    user = await db.get_user_by_email(form_data.username)
-    if not user:
+class UserResponse(BaseModel):
+    id: str
+    username: str
+    email: str
+    full_name: Optional[str] = None
+
+@router.get("/login/azure")
+async def login_azure(request: Request):
+    """
+    Initiate Azure AD B2C login
+    """
+    try:
+        azure_client = oauth.create_client('azure_ad_b2c')
+        redirect_uri = request.url_for('azure_callback')
+        return await azure_client.authorize_redirect(request, redirect_uri)
+    except Exception as e:
+        logger.error(f"Azure login error: {str(e)}")
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
-            headers={"WWW-Authenticate": "Bearer"},
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Azure login error: {str(e)}"
         )
-    
-    # Verify password
-    if not verify_password(form_data.password, user.hashed_password):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
-            headers={"WWW-Authenticate": "Bearer"},
+
+@router.post("/azure/callback")
+async def azure_callback(request: CodeRequest):
+    """
+    Handle Azure AD B2C callback
+    """
+    try:
+        azure_client = oauth.create_client('azure_ad_b2c')
+        # Exchange code for token
+        token = await azure_client.authorize_access_token(code=request.code)
+        user_info = token.get('userinfo', {})
+        
+        if not user_info:
+            # Extract information from ID token if userinfo is not available
+            id_token = token.get('id_token')
+            if id_token:
+                user_info = jwt.decode(id_token, options={"verify_signature": False})
+        
+        # Get or create user in your database
+        user = await get_or_create_user(
+            provider="azure",
+            sub=user_info.get('sub'),
+            email=user_info.get('emails', [None])[0] if isinstance(user_info.get('emails'), list) else user_info.get('email'),
+            name=user_info.get('name'),
+            username=user_info.get('preferred_username')
         )
+        
+        # Create a JWT token for your API
+        api_token = create_api_token(user)
+        
+        return TokenResponse(access_token=api_token)
     
-    # Create access token
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.email}, expires_delta=access_token_expires
-    )
-    
-    return {"access_token": access_token, "token_type": "bearer"}
-
-
-@router.post("/register", response_model=UserResponse)
-async def register_user(
-    user_in: UserCreate = Body(...),
-    db = Depends(get_db)
-) -> Any:
-    """Register a new user."""
-    # Check if user with this email already exists
-    existing_user = await db.get_user_by_email(user_in.email)
-    if existing_user:
+    except Exception as e:
+        logger.error(f"Azure callback error: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="A user with this email already exists",
+            detail=f"Azure callback error: {str(e)}"
         )
-    
-    # Create new user
-    hashed_password = get_password_hash(user_in.password)
-    user = UserInDB(
-        email=user_in.email,
-        hashed_password=hashed_password,
-        full_name=user_in.full_name,
-        households=[]
-    )
-    
-    # Save user to database
-    created_user = await db.create_user(user)
-    
-    return UserResponse(
-        id=created_user.id,
-        email=created_user.email,
-        full_name=created_user.full_name,
-        households=created_user.households
-    )
 
+@router.post("/google/callback")
+async def google_callback(request: GoogleTokenRequest):
+    """
+    Handle Google callback with ID token
+    """
+    try:
+        # Validate the Google ID token
+        user_info = await validate_google_token(request.id_token)
+        
+        # Get or create user in your database
+        user = await get_or_create_user(
+            provider="google",
+            sub=user_info.get('sub'),
+            email=user_info.get('email'),
+            name=user_info.get('name'),
+            username=user_info.get('email')
+        )
+        
+        # Create a JWT token for your API
+        api_token = create_api_token(user)
+        
+        return TokenResponse(access_token=api_token)
+    
+    except Exception as e:
+        logger.error(f"Google callback error: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Google callback error: {str(e)}"
+        )
 
 @router.get("/me", response_model=UserResponse)
-async def read_users_me(
-    current_user: UserInDB = Depends(get_current_user)
-) -> Any:
-    """Get current user."""
-    return UserResponse(
-        id=current_user.id,
-        email=current_user.email,
-        full_name=current_user.full_name,
-        households=current_user.households
-    )
-
-
-@router.post("/azure/callback", response_model=Token)
-async def azure_callback(
-    code: str = Body(..., embed=True),
-    db = Depends(get_db)
-) -> Dict[str, str]:
-    """Handle Azure AD B2C callback and generate JWT token."""
+async def get_current_user(token_data: TokenData = Depends(get_token_data)):
+    """
+    Get current authenticated user
+    """
     try:
-        # Exchange code for token
-        token_data = await azure_exchange_code(code)
-        
-        # Extract the ID token
-        id_token = token_data.get("id_token")
-        if not id_token:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Invalid response from Azure AD B2C"
-            )
-        
-        # Verify token and get claims
-        claims = await verify_azure_token(id_token)
-        
-        # Get email from claims
-        email = claims.get("emails")
-        if isinstance(email, list) and len(email) > 0:
-            email = email[0]
-        else:
-            email = claims.get("email")
-        
-        if not email:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Email not found in token claims"
-            )
-        
-        # Find user in database or create new one
-        user = await db.get_user_by_email(email)
+        # Find user in database
+        user = await User.find_by_sub(token_data.sub)
         if not user:
-            name = claims.get("name", "")
-            user = UserInDB(
-                email=email,
-                hashed_password="",  # No password for Azure users
-                full_name=name,
-                is_azure_user=True,
-                households=[]
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
             )
-            user = await db.create_user(user)
-        
-        # Create access token
-        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-        access_token = create_access_token(
-            data={"sub": user.email}, expires_delta=access_token_expires
+            
+        return UserResponse(
+            id=str(user.id),
+            username=user.username,
+            email=user.email,
+            full_name=user.full_name
         )
-        
-        return {"access_token": access_token, "token_type": "bearer"}
         
     except Exception as e:
+        logger.error(f"Get current user error: {str(e)}")
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Azure authentication failed: {str(e)}"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error retrieving user: {str(e)}"
         )
 
-
-@router.post("/google/callback", response_model=Token)
-async def google_callback(
-    id_token: str = Body(..., embed=True),
-    db = Depends(get_db)
-) -> Dict[str, str]:
-    """Handle Google OAuth callback and generate JWT token."""
+async def get_or_create_user(provider: str, sub: str, email: str, name: Optional[str] = None, username: Optional[str] = None):
+    """
+    Get or create a user in the database based on the provider and subject identifier
+    """
     try:
-        # Verify token and get claims
-        claims = await verify_google_token(id_token)
+        # Try to find user by provider and sub
+        user = await User.find_by_provider_and_sub(provider, sub)
         
-        # Get email from claims
-        email = claims.get("email")
-        if not email or not claims.get("email_verified", False):
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Email not found in token claims or not verified"
-            )
-        
-        # Find user in database or create new one
-        user = await db.get_user_by_email(email)
+        # If user doesn't exist, create a new one
         if not user:
-            name = claims.get("name", "")
-            user = UserInDB(
+            user = User(
+                provider=provider,
+                provider_user_id=sub,
                 email=email,
-                hashed_password="",  # No password for Google users
-                full_name=name,
-                is_google_user=True,
-                households=[]
+                username=username or email.split('@')[0],
+                full_name=name
             )
-            user = await db.create_user(user)
-        
-        # Create access token
-        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-        access_token = create_access_token(
-            data={"sub": user.email}, expires_delta=access_token_expires
-        )
-        
-        return {"access_token": access_token, "token_type": "bearer"}
-        
+            await user.save()
+            
+        return user
+    
     except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Google authentication failed: {str(e)}"
-        )
+        logger.error(f"Error in get_or_create_user: {str(e)}")
+        raise
+
+def create_api_token(user: User) -> str:
+    """
+    Create a JWT token for API authentication
+    """
+    payload = {
+        "sub": str(user.id),
+        "email": user.email,
+        "name": user.full_name,
+        "iat": int(time.time()),
+        "exp": int(time.time() + settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
+    }
+    
+    return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)

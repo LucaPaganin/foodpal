@@ -2,6 +2,46 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Start CosmosDB Emulator",
+      "type": "shell",
+      "command": "docker-compose",
+      "args": [
+        "up",
+        "-d",
+        "cosmos-db-emulator"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "develop"
+      },
+      "detail": "Start CosmosDB Emulator in Docker container"
+    },
+    {
+      "label": "Initialize CosmosDB Containers",
+      "type": "shell",
+      "command": "${command:python.interpreterPath}",
+      "args": [
+        "-m",
+        "app.utils.init_cosmos_db"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "develop"
+      },
+      "detail": "Initialize CosmosDB containers for development",
+      "dependsOn": ["Start CosmosDB Emulator"]
+    },
+    {
       "label": "Start Frontend Dev Server",
       "type": "npm",
       "script": "start",
@@ -87,11 +127,12 @@
     {
       "label": "Start Full Stack Dev Environment",
       "dependsOn": [
+        "Initialize CosmosDB Containers",
         "Start Backend Dev Server",
         "Start Frontend Dev Server"
       ],
       "problemMatcher": [],
-      "detail": "Start both frontend and backend development servers"
+      "detail": "Start CosmosDB emulator, backend and frontend development servers"
     }
   ]
 }

@@ -1,10 +1,19 @@
 import logging
+import os
+import ssl
+import certifi
+import requests
+import urllib3
 from typing import Dict, List, Optional, Union
+import tempfile
 
 from azure.cosmos import CosmosClient, PartitionKey
 from azure.cosmos.exceptions import CosmosResourceNotFoundError
 
 from app.core.config import settings
+
+# Disable SSL warning when using the emulator
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 logger = logging.getLogger(__name__)
 
@@ -15,24 +24,58 @@ class CosmosDB:
         self.client = None
         self.database = None
         self.containers = {}
+        self.emulator_cert_path = None
+        
+    def _download_emulator_cert(self):
+        """Download emulator certificate and save it to a temporary file."""
+        try:
+            # Extract hostname from the endpoint
+            host = settings.COSMOS_EMULATOR_ENDPOINT.split("://")[1].split(":")[0]
+            
+            # Downloading the emulator certificate ignoring SSL verification
+            cert_url = f"{settings.COSMOS_EMULATOR_ENDPOINT}/_explorer/emulator.pem"
+            response = requests.get(cert_url, verify=False)
+            
+            if response.status_code == 200:
+                # Create a temporary file for the certificate
+                fd, self.emulator_cert_path = tempfile.mkstemp(suffix='.pem')
+                with os.fdopen(fd, 'wb') as f:
+                    f.write(response.content)
+                logger.info(f"Downloaded emulator certificate to {self.emulator_cert_path}")
+                return self.emulator_cert_path
+            else:
+                logger.error(f"Failed to download emulator certificate: {response.status_code}")
+                return None
+        except Exception as e:
+            logger.error(f"Error downloading emulator certificate: {e}")
+            return None
         
     async def connect(self):
         """Connect to Azure Cosmos DB."""
         try:
+            connection_kwargs = {
+                "url": settings.COSMOS_ENDPOINT,
+                "credential": settings.COSMOS_KEY
+            }
+            
+            # If using the emulator, configure SSL
+            if settings.USE_COSMOS_EMULATOR:
+                logger.info("Connecting to CosmosDB Emulator")
+                connection_kwargs["connection_verify"] = False
+            else:
+                logger.info("Connecting to Azure CosmosDB")
+                
             # Initialize Cosmos client
-            self.client = CosmosClient(
-                url=settings.COSMOS_ENDPOINT, 
-                credential=settings.COSMOS_KEY
-            )
+            self.client = CosmosClient(**connection_kwargs)
             
             # Create or get database
             self.database = self.client.create_database_if_not_exists(
                 id=settings.COSMOS_DATABASE
             )
             
-            logger.info(f"Connected to Azure Cosmos DB: {settings.COSMOS_DATABASE}")
+            logger.info(f"Connected to {'emulator' if settings.USE_COSMOS_EMULATOR else 'Azure'} Cosmos DB: {settings.COSMOS_DATABASE}")
         except Exception as e:
-            logger.error(f"Failed to connect to Azure Cosmos DB: {e}")
+            logger.error(f"Failed to connect to Cosmos DB: {e}")
             raise
     
     def get_container(self, container_id: str, partition_key: str = "/id"):
@@ -110,3 +153,12 @@ class CosmosDB:
 
 # Create a singleton instance
 cosmos_db = CosmosDB()
+
+# Standalone function for accessing containers
+async def initialize():
+    """Initialize the database connection."""
+    await cosmos_db.connect()
+
+async def get_container(container_id: str, partition_key: str = "/id"):
+    """Get a container from the database."""
+    return cosmos_db.get_container(container_id, partition_key)

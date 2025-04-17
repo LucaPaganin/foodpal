@@ -78,33 +78,33 @@
       "id": "authentication",
       "name": "Authentication System",
       "description": "Implement user authentication and household management",
-      "status": "todo",
+      "status": "to_be_tested",
       "subtasks": [
         {
           "id": "auth-frontend",
           "name": "Frontend Authentication",
           "description": "Implement frontend authentication components",
-          "status": "todo",
+          "status": "done",
           "tasks": [
             {
               "name": "Create login/signup pages",
-              "status": "todo"
+              "status": "done"
             },
             {
               "name": "Implement SSO integration with Azure AD B2C",
-              "status": "todo"
+              "status": "done"
             },
             {
               "name": "Create Google OAuth integration",
-              "status": "todo"
+              "status": "done"
             },
             {
               "name": "Build authentication state management",
-              "status": "todo"
+              "status": "done"
             },
             {
               "name": "Create protected routes system",
-              "status": "todo"
+              "status": "done"
             }
           ]
         },
@@ -112,19 +112,19 @@
           "id": "auth-backend",
           "name": "Backend Authentication",
           "description": "Implement backend authentication services",
-          "status": "todo",
+          "status": "in-progress",
           "tasks": [
             {
               "name": "Create authentication API endpoints",
-              "status": "todo"
+              "status": "done"
             },
             {
               "name": "Implement JWT token generation and validation",
-              "status": "todo"
+              "status": "done"
             },
             {
               "name": "Setup user profile database schema",
-              "status": "todo"
+              "status": "done"
             },
             {
               "name": "Implement household sharing capabilities",
