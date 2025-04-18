@@ -21,8 +21,11 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
-    # Azure AD B2C
+    # Azure AD B2C (deprecated, use new variables below)
     AZURE_AD_B2C_TENANT_NAME: str = os.getenv("AZURE_AD_B2C_TENANT_NAME", "")
+    # New Azure B2C variables
+    AZURE_AD_B2C_TENANT_NAME: str = os.getenv("AZURE_AD_B2C_TENANT_NAME", "")
+    AZURE_AD_B2C_TENANT_DOMAIN: str = os.getenv("AZURE_AD_B2C_TENANT_DOMAIN", "")
     AZURE_AD_B2C_CLIENT_ID: str = os.getenv("AZURE_AD_B2C_CLIENT_ID", "")
     AZURE_AD_B2C_CLIENT_SECRET: str = os.getenv("AZURE_AD_B2C_CLIENT_SECRET", "")
     AZURE_AD_B2C_POLICY_SIGNIN: str = os.getenv("AZURE_AD_B2C_POLICY_SIGNIN", "B2C_1_signin")

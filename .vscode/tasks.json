@@ -15,7 +15,22 @@
       "options": {
         "cwd": "${workspaceFolder}"
       },
-      "problemMatcher": [],
+      "problemMatcher": {
+        "pattern": [
+          {
+            "regexp": ".",
+            "file": 1,
+            "location": 2,
+            "message": 3
+          }
+        ],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Creating cosmos-db-emulator",
+          "endsPattern": "cosmos-db-emulator.*(Up|running)"
+        }
+      },
+      "isBackground": true,
       "presentation": {
         "reveal": "always",
         "panel": "new",
@@ -34,7 +49,22 @@
       "options": {
         "cwd": "${workspaceFolder}/backend"
       },
-      "problemMatcher": [],
+      "problemMatcher": {
+        "pattern": [
+          {
+            "regexp": ".",
+            "file": 1,
+            "location": 2,
+            "message": 3
+          }
+        ],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Initializing CosmosDB containers",
+          "endsPattern": "CosmosDB containers initialized"
+        }
+      },
+      "isBackground": true,
       "presentation": {
         "reveal": "always",
         "panel": "new",

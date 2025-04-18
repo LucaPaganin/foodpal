@@ -7,6 +7,7 @@ import logging
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2AuthorizationCodeBearer
 from pydantic import BaseModel
+import httpx  # Add this import
 
 from app.core.config import settings
 
@@ -14,9 +15,13 @@ from app.core.config import settings
 logger = logging.getLogger(__name__)
 
 # OAuth2 scheme for swagger docs
+b2c_tenant = settings.AZURE_AD_B2C_TENANT_NAME or settings.AZURE_AD_B2C_TENANT_NAME
+b2c_domain = settings.AZURE_AD_B2C_TENANT_DOMAIN or f"{b2c_tenant}.onmicrosoft.com"
+b2c_policy = settings.AZURE_AD_B2C_POLICY
+
 oauth2_scheme = OAuth2AuthorizationCodeBearer(
-    authorizationUrl=f"https://{settings.AZURE_AD_B2C_TENANT_NAME}.b2clogin.com/{settings.AZURE_AD_B2C_TENANT_NAME}.onmicrosoft.com/{settings.AZURE_AD_B2C_POLICY}/oauth2/v2.0/authorize",
-    tokenUrl=f"https://{settings.AZURE_AD_B2C_TENANT_NAME}.b2clogin.com/{settings.AZURE_AD_B2C_TENANT_NAME}.onmicrosoft.com/{settings.AZURE_AD_B2C_POLICY}/oauth2/v2.0/token"
+    authorizationUrl=f"https://{b2c_tenant}.b2clogin.com/{b2c_domain}/{b2c_policy}/oauth2/v2.0/authorize",
+    tokenUrl=f"https://{b2c_tenant}.b2clogin.com/{b2c_domain}/{b2c_policy}/oauth2/v2.0/token"
 )
 
 # Initialize OAuth with Authlib
@@ -27,7 +32,7 @@ oauth.register(
     name="azure_ad_b2c",
     client_id=settings.AZURE_AD_B2C_CLIENT_ID,
     client_secret=settings.AZURE_AD_B2C_CLIENT_SECRET,
-    server_metadata_url=f"https://{settings.AZURE_AD_B2C_TENANT_NAME}.b2clogin.com/{settings.AZURE_AD_B2C_TENANT_NAME}.onmicrosoft.com/{settings.AZURE_AD_B2C_POLICY}/v2.0/.well-known/openid-configuration",
+    server_metadata_url=f"https://{b2c_tenant}.b2clogin.com/{b2c_domain}/{b2c_policy}/v2.0/.well-known/openid-configuration",
     client_kwargs={
         "scope": "openid profile email",
         "response_type": "code",
@@ -62,15 +67,24 @@ async def get_token_data(token: str = Depends(oauth2_scheme)) -> TokenData:
     Decode and validate JWT token
     """
     try:
-        # Get Azure AD B2C JWKS
-        jwks_uri = f"https://{settings.AZURE_AD_B2C_TENANT_NAME}.b2clogin.com/{settings.AZURE_AD_B2C_TENANT_NAME}.onmicrosoft.com/discovery/v2.0/keys?p={settings.AZURE_AD_B2C_POLICY}"
-        
-        # Decode the token
+        # Get Azure AD B2C JWKS using new env variables
+        b2c_tenant = settings.AZURE_AD_B2C_TENANT_NAME or settings.AZURE_AD_B2C_TENANT_NAME
+        b2c_domain = settings.AZURE_AD_B2C_TENANT_DOMAIN or f"{b2c_tenant}.onmicrosoft.com"
+        b2c_policy = settings.AZURE_AD_B2C_POLICY
+        jwks_uri = f"https://{b2c_tenant}.b2clogin.com/{b2c_domain}/discovery/v2.0/keys?p={b2c_policy}"
+
+        # Fetch JWKS and extract keys
+        async with httpx.AsyncClient() as client:
+            jwks_response = await client.get(jwks_uri)
+            jwks = jwks_response.json()
+            keys = jwks["keys"]
+
+        # Decode the token using the JWKS keys
         payload = jwt.decode(
             token,
-            jwks_uri,
+            keys,
             claims_options={
-                "iss": {"essential": True, "value": f"https://{settings.AZURE_AD_B2C_TENANT_NAME}.b2clogin.com/{settings.AZURE_AD_B2C_TENANT_NAME}.onmicrosoft.com/v2.0/"},
+                "iss": {"essential": True, "value": f"https://{b2c_tenant}.b2clogin.com/{b2c_domain}/v2.0/"},
                 "aud": {"essential": True, "value": settings.AZURE_AD_B2C_CLIENT_ID}
             }
         )

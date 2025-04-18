@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   cosmos-db-emulator:
     image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest

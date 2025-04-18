@@ -15,10 +15,10 @@ from app.models.user import UserInDB
 oauth2_scheme_azure = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/azure", auto_error=False)
 
 # Azure AD B2C configuration
-B2C_TENANT = settings.AZURE_B2C_TENANT
-B2C_CLIENT_ID = settings.AZURE_B2C_CLIENT_ID
-B2C_CLIENT_SECRET = settings.AZURE_B2C_CLIENT_SECRET
-B2C_REDIRECT_URI = settings.AZURE_B2C_REDIRECT_URI
+B2C_TENANT = settings.AZURE_AD_B2C_TENANT
+B2C_CLIENT_ID = settings.AZURE_AD_B2C_CLIENT_ID
+B2C_CLIENT_SECRET = settings.AZURE_AD_B2C_CLIENT_SECRET
+B2C_REDIRECT_URI = settings.AZURE_AD_B2C_REDIRECT_URI
 B2C_TOKEN_ENDPOINT = f"https://{B2C_TENANT}.b2clogin.com/{B2C_TENANT}.onmicrosoft.com/oauth2/v2.0/token"
 B2C_JWKS_URI = f"https://{B2C_TENANT}.b2clogin.com/{B2C_TENANT}.onmicrosoft.com/discovery/v2.0/keys"
 

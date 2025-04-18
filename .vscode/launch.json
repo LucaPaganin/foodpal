@@ -13,7 +13,8 @@
       "preLaunchTask": "Start Frontend Dev Server",
       "presentation": {
         "group": "frontend"
-      }
+      },
+      "userDataDir": "${workspaceFolder}/.vscode/chrome-user-data"
     },
     {
       "name": "Debug Frontend (Edge)",
@@ -51,7 +52,8 @@
         "PYTHONPATH": "${workspaceFolder}/backend",
         "DEBUG": "true",
         "DB_CONNECTION_STRING": "local_development_connection_string"
-      }
+      },
+      "preLaunchTask": "Start CosmosDB Emulator"
     },
     {
       "name": "Debug Full Stack",

@@ -20,9 +20,29 @@ const axiosInstance = axios.create({
 // @ts-ignore - Suppressing TypeScript errors with async functions in axios interceptors
 axiosInstance.interceptors.request.use(
   async (config) => {
+    let token: string | null = null;
     const user = await oidcAuthService.getUser();
-    if (user?.access_token && config.headers) {
-      config.headers['Authorization'] = `Bearer ${user.access_token}`;
+    if (user?.access_token) {
+      token = user.access_token;
+    } else {
+      // Fallback: search for OIDC user token in localStorage
+      const oidcKey = Object.keys(localStorage).find((key) => key.startsWith('oidc.user'));
+      if (oidcKey) {
+        try {
+          const oidcUser = JSON.parse(localStorage.getItem(oidcKey) || '{}');
+          if (oidcUser && oidcUser.id_token) {
+            token = oidcUser.id_token;
+          }
+        } catch (e) {
+          // Ignore JSON parse errors
+        }
+      } else {
+        // Fallback for legacy/local auth
+        token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+      }
+    }
+    if (token && config.headers) {
+      config.headers['Authorization'] = `Bearer ${token}`;
     }
     return config;
   },
