@@ -16,7 +16,9 @@ import {
   Typography,
   Grid,
   FormHelperText,
-  CircularProgress
+  CircularProgress,
+  FormControlLabel,
+  Checkbox
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
@@ -26,7 +28,8 @@ import {
   Meal,
   MealType,
   addMealToPlanner,
-  createMeal
+  createMeal,
+  fetchMeals
 } from '../../../store/slices/mealsSlice';
 
 interface MealPlannerDialogProps {
@@ -46,7 +49,14 @@ const MealPlannerDialog: React.FC<MealPlannerDialogProps> = ({
   const dispatch = useDispatch<AppDispatch>();
   
   const { meals, loading } = useSelector((state: RootState) => state.meals);
-  
+
+  // Fetch meals from backend when dialog opens
+  React.useEffect(() => {
+    if (open) {
+      dispatch(fetchMeals());
+    }
+  }, [open, dispatch]);
+
   // Local state
   const [selectedMealId, setSelectedMealId] = useState<string>('');
   const [createNewMeal, setCreateNewMeal] = useState<boolean>(false);
@@ -57,17 +67,23 @@ const MealPlannerDialog: React.FC<MealPlannerDialogProps> = ({
     mealId?: string;
     mealName?: string;
   }>({});
+
+  // Reset form when dialog opens
+  React.useEffect(() => {
+    if (open) {
+      setSelectedMealId('');
+      setCreateNewMeal(false);
+      setNewMealName('');
+      setServingCount(1);
+      setNotes('');
+      setErrors({});
+    }
+  }, [open]);
+
   // Handle selecting an existing meal
   const handleMealSelect = (event: SelectChangeEvent<string>) => {
-    const value = event.target.value;
-    setSelectedMealId(value);
-    
-    if (value === 'new') {
-      setCreateNewMeal(true);
-    } else {
-      setCreateNewMeal(false);
-      setErrors({ ...errors, mealId: undefined });
-    }
+    setSelectedMealId(event.target.value);
+    setErrors({ ...errors, mealId: undefined });
   };
 
   // Handle form submission
@@ -143,7 +159,20 @@ const MealPlannerDialog: React.FC<MealPlannerDialogProps> = ({
             {format(day, 'PPPP')} - {t(mealType)}
           </Typography>
         </Box>
-        
+        <Box sx={{ mb: 2 }}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={createNewMeal}
+                onChange={(_, checked) => {
+                  setCreateNewMeal(checked);
+                  setErrors({});
+                }}
+              />
+            }
+            label={t('Create New Meal')}
+          />
+        </Box>
         {!createNewMeal ? (
           <FormControl fullWidth error={!!errors.mealId} sx={{ mb: 3 }}>
             <InputLabel id="meal-select-label">{t('Select Meal')}</InputLabel>
@@ -153,14 +182,15 @@ const MealPlannerDialog: React.FC<MealPlannerDialogProps> = ({
               value={selectedMealId}
               onChange={handleMealSelect}
               label={t('Select Meal')}
+              onOpen={() => dispatch(fetchMeals())}
             >
-              <MenuItem value="new">{t('Create New Meal')}</MenuItem>
-              <MenuItem disabled>
-                <Typography variant="caption" sx={{ fontStyle: 'italic' }}>
-                  {t('Existing Meals')}
-                </Typography>
-              </MenuItem>
-              {meals.map((meal) => (
+              {loading && (
+                <MenuItem disabled>{t('Loading...')}</MenuItem>
+              )}
+              {!loading && meals.length === 0 && (
+                <MenuItem disabled>{t('No meals available')}</MenuItem>
+              )}
+              {!loading && meals.map((meal) => (
                 <MenuItem key={meal.id} value={meal.id}>
                   {meal.name}
                 </MenuItem>
@@ -179,9 +209,8 @@ const MealPlannerDialog: React.FC<MealPlannerDialogProps> = ({
             sx={{ mb: 2 }}
           />
         )}
-        
         <Grid container spacing={2} sx={{ mb: 2 }}>
-          <Box>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
               fullWidth
               type="number"
@@ -192,8 +221,8 @@ const MealPlannerDialog: React.FC<MealPlannerDialogProps> = ({
                 inputProps: { min: 1 }
               }}
             />
-          </Box>
-          <Box>
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
             {createNewMeal && (
               <FormControl fullWidth>
                 <InputLabel>{t('Meal Type')}</InputLabel>
@@ -209,9 +238,8 @@ const MealPlannerDialog: React.FC<MealPlannerDialogProps> = ({
                 </Select>
               </FormControl>
             )}
-          </Box>
+          </Grid>
         </Grid>
-        
         <TextField
           fullWidth
           label={t('Notes')}
@@ -222,13 +250,12 @@ const MealPlannerDialog: React.FC<MealPlannerDialogProps> = ({
           sx={{ mb: 2 }}
         />
       </DialogContent>
-      
       <DialogActions sx={{ px: 3, pb: 2 }}>
         <Button onClick={onClose}>{t('Cancel')}</Button>
-        <Button 
+        <Button
           variant="contained"
           onClick={handleSubmit}
-          disabled={loading}
+          disabled={loading || (!createNewMeal && !selectedMealId) || (createNewMeal && !newMealName.trim())}
           startIcon={loading ? <CircularProgress size={20} /> : null}
         >
           {createNewMeal ? t('Create & Add to Plan') : t('Add to Plan')}
