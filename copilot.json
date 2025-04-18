@@ -6,13 +6,13 @@
       "id": "setup",
       "name": "Project Setup",
       "description": "Initial project configuration and setup",
-      "status": "done",
+      "status": "tested",
       "subtasks": [
         {
           "id": "setup-frontend",
           "name": "Frontend Setup",
           "description": "Setup React frontend with TypeScript and required dependencies",
-          "status": "todo",
+          "status": "tested",
           "tasks": [
             {
               "name": "Configure PWA capabilities with service workers",
@@ -44,7 +44,7 @@
           "id": "setup-backend",
           "name": "Backend Setup",
           "description": "Setup FastAPI backend with required dependencies",
-          "status": "done",
+          "status": "tested",
           "tasks": [
             {
               "name": "Initialize FastAPI project structure",
@@ -78,13 +78,13 @@
       "id": "authentication",
       "name": "Authentication System",
       "description": "Implement user authentication and household management",
-      "status": "done",
+      "status": "tested",
       "subtasks": [
         {
           "id": "auth-frontend",
           "name": "Frontend Authentication",
           "description": "Implement frontend authentication components",
-          "status": "done",
+          "status": "tested",
           "tasks": [
             {
               "name": "Create login/signup pages",
@@ -112,7 +112,7 @@
           "id": "auth-backend",
           "name": "Backend Authentication",
           "description": "Implement backend authentication services",
-          "status": "in-progress",
+          "status": "tested",
           "tasks": [
             {
               "name": "Create authentication API endpoints",

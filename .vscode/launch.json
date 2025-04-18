@@ -2,6 +2,22 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Python: task_progress_gui.py",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/venv/bin/streamlit",
+      "console": "integratedTerminal",
+      "args": [
+        "run",
+        "${workspaceFolder}/task_progress_gui.py"
+      ],
+      "presentation": {
+        "hidden": false,
+        "group": "",
+        "order": 1
+      }
+    },
+    {
       "name": "Debug Frontend (Chrome)",
       "type": "chrome",
       "request": "launch",
@@ -73,7 +89,10 @@
   "compounds": [
     {
       "name": "Debug Frontend & Backend",
-      "configurations": ["Debug Backend (FastAPI)", "Debug Frontend (Chrome)"],
+      "configurations": [
+        "Debug Backend (FastAPI)",
+        "Debug Frontend (Chrome)"
+      ],
       "stopAll": true,
       "presentation": {
         "group": "fullstack",
