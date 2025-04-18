@@ -72,7 +72,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overall_status": "tested"
     },
     {
       "id": "authentication",
@@ -136,7 +137,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overall_status": "tested"
     },
     {
       "id": "meal-planning",
@@ -148,7 +150,7 @@
           "id": "meal-models",
           "name": "Meal Data Models",
           "description": "Create data models for meals and planning",
-          "status": "todo",
+          "status": "to_be_tested",
           "tasks": [
             {
               "name": "Design meal schema with categorization",
@@ -168,7 +170,7 @@
           "id": "meal-ui",
           "name": "Meal Planning UI",
           "description": "Build meal planning interface",
-          "status": "todo",
+          "status": "to_be_tested",
           "tasks": [
             {
               "name": "Create weekly calendar interface",
@@ -192,7 +194,7 @@
           "id": "meal-api",
           "name": "Meal Planning API",
           "description": "Implement meal planning backend functionality",
-          "status": "todo",
+          "status": "to_be_tested",
           "tasks": [
             {
               "name": "Create meal CRUD endpoints",
@@ -212,7 +214,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overall_status": "to_be_tested"
     },
     {
       "id": "ingredient-management",
@@ -288,7 +291,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overall_status": "todo"
     },
     {
       "id": "recipe-management",
@@ -368,7 +372,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overall_status": "todo"
     },
     {
       "id": "shopping-tools",
@@ -444,7 +449,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overall_status": "todo"
     },
     {
       "id": "ui-ux",
@@ -476,7 +482,8 @@
           "name": "Design notification system for alerts and reminders",
           "status": "todo"
         }
-      ]
+      ],
+      "overall_status": "todo"
     },
     {
       "id": "pwa-features",
@@ -504,7 +511,8 @@
           "name": "Optimize for mobile performance and battery usage",
           "status": "todo"
         }
-      ]
+      ],
+      "overall_status": "todo"
     },
     {
       "id": "deployment",
@@ -596,7 +604,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overall_status": "todo"
     },
     {
       "id": "testing",
@@ -628,7 +637,8 @@
           "name": "Design performance testing procedures",
           "status": "todo"
         }
-      ]
+      ],
+      "overall_status": "todo"
     }
   ],
   "dependencies": {

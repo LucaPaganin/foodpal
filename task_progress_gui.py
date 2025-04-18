@@ -32,15 +32,28 @@ def main():
 
     tasks = st.session_state.tasks
 
+    # Multiselect to filter by overall status
+    filter_statuses = st.multiselect(
+        "Filter tasks by overall status",
+        STATUS_OPTIONS,
+        default=STATUS_OPTIONS
+    )
+
     def render_task(task, idx):
         with st.expander(f'{task["name"]}', expanded=True):
-            status = st.selectbox(
-                "Status",
+            # Overall status selectbox
+            overall_status = st.selectbox(
+                "Overall Status",
                 STATUS_OPTIONS,
-                index=STATUS_OPTIONS.index(task["status"]) if task["status"] in STATUS_OPTIONS else 0,
-                key=f"task_status_{idx}"
+                index=STATUS_OPTIONS.index(task.get("overall_status", task.get("status", STATUS_OPTIONS[0])))
+                    if task.get("overall_status", task.get("status", STATUS_OPTIONS[0])) in STATUS_OPTIONS else 0,
+                key=f"task_overall_status_{idx}"
             )
-            task["status"] = status
+            task["overall_status"] = overall_status
+
+            # (Optional) legacy: update "status" for backward compatibility
+            task["status"] = overall_status
+
             # Subtasks
             for j, sub in enumerate(task.get("subtasks", [])):
                 sub_status = st.selectbox(
@@ -52,7 +65,10 @@ def main():
                 sub["status"] = sub_status
 
     st.subheader("Tasks")
-    for i, task in enumerate(tasks):
+    # Filter tasks by selected overall statuses
+    filtered_tasks = [t for t in tasks if t.get("overall_status", t.get("status")) in filter_statuses]
+
+    for i, task in enumerate(filtered_tasks):
         render_task(task, i)
 
     if st.button("Save Changes"):
