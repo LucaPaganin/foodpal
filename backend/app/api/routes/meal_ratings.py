@@ -28,13 +28,13 @@ async def create_meal_rating(
         
         # Create rating with user info
         rating_db = MealRatingDB(
-            **rating.dict(),
+            **rating.model_dump(),
             user_id=token_data.sub,
             household_id=token_data.sub  # Using user ID as household ID for now
         )
         
         # Save to database
-        await ratings_container.create_item(rating_db.dict())
+        ratings_container.create_item(rating_db.model_dump(by_alias=True))
         
         # After rating is saved, update the meal's average rating
         await update_meal_average_rating(rating_db.meal_id, token_data.sub)
@@ -67,7 +67,7 @@ async def get_meal_ratings(
         
         # Execute the query
         ratings = []
-        async for rating in ratings_container.query_items(
+        for rating in ratings_container.query_items(
             query=query,
             parameters=params,
             partition_key=token_data.sub
@@ -99,7 +99,7 @@ async def get_meal_rating_statistics(
         meal_params = [{"name": "@meal_id", "value": str(meal_id)}]
         
         meal_name = "Unknown Meal"
-        async for meal in meals_container.query_items(
+        for meal in meals_container.query_items(
             query=meal_query,
             parameters=meal_params,
             enable_cross_partition_query=True
@@ -120,7 +120,7 @@ async def get_meal_rating_statistics(
         rating_distribution = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}
         comments = []
         
-        async for rating in ratings_container.query_items(
+        for rating in ratings_container.query_items(
             query=query,
             parameters=params,
             partition_key=token_data.sub
@@ -129,7 +129,6 @@ async def get_meal_rating_statistics(
             rating_value = rating.get('rating')
             rating_sum += rating_value
             rating_distribution[rating_value] = rating_distribution.get(rating_value, 0) + 1
-            
             if rating.get('comments'):
                 comments.append(rating.get('comments'))
         
@@ -175,39 +174,29 @@ async def delete_meal_rating(
         
         # Execute query
         ratings = []
-        async for rating in ratings_container.query_items(
+        for rating in ratings_container.query_items(
             query=query,
             parameters=params,
             enable_cross_partition_query=True
         ):
             ratings.append(MealRatingDB(**rating))
-        
         if not ratings:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Rating with ID {rating_id} not found"
             )
-        
         existing_rating = ratings[0]
-        
-        # Check if user has access to delete this rating
         if str(existing_rating.user_id) != token_data.sub:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="You don't have permission to delete this rating"
             )
-        
         meal_id = existing_rating.meal_id
-        
-        # Delete the rating
-        await ratings_container.delete_item(
+        ratings_container.delete_item(
             item=str(existing_rating.id),
             partition_key=str(existing_rating.household_id)
         )
-        
-        # Update the meal's average rating
         await update_meal_average_rating(meal_id, token_data.sub)
-        
         return None
         
     except HTTPException:
@@ -235,7 +224,7 @@ async def update_meal_average_rating(meal_id: UUID, household_id: str):
         
         # Calculate average rating
         ratings = []
-        async for rating in ratings_container.query_items(
+        for rating in ratings_container.query_items(
             query=query,
             parameters=params,
             partition_key=household_id
@@ -254,7 +243,7 @@ async def update_meal_average_rating(meal_id: UUID, household_id: str):
         meal_params = [{"name": "@meal_id", "value": str(meal_id)}]
         
         meals = []
-        async for meal in meals_container.query_items(
+        for meal in meals_container.query_items(
             query=meal_query,
             parameters=meal_params,
             enable_cross_partition_query=True
@@ -264,8 +253,8 @@ async def update_meal_average_rating(meal_id: UUID, household_id: str):
         if meals:
             meal = meals[0]
             meal['rating'] = average_rating
-            await meals_container.replace_item(
-                item=meal['id'],
+            meals_container.replace_item(
+                item=str(meal['id']),
                 body=meal
             )
             

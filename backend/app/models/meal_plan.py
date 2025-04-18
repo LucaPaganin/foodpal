@@ -2,10 +2,10 @@ from datetime import datetime, date
 from enum import Enum
 from typing import Dict, List, Optional, Union
 from uuid import UUID, uuid4
-
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 from app.models.meal import MealType, MealDB, Meal
+from app.schemas import BaseSchema
 
 
 class MealPlanStatus(str, Enum):
@@ -15,7 +15,7 @@ class MealPlanStatus(str, Enum):
     REPLACED = "replaced"
 
 
-class MealPlanEntryBase(BaseModel):
+class MealPlanEntryBase(BaseSchema):
     meal_id: UUID
     planned_date: date
     meal_type: MealType
@@ -25,13 +25,14 @@ class MealPlanEntryBase(BaseModel):
     
     class Config:
         use_enum_values = True
+        
 
 
 class MealPlanEntryCreate(MealPlanEntryBase):
     pass
 
 
-class MealPlanEntryUpdate(BaseModel):
+class MealPlanEntryUpdate(BaseSchema):
     meal_id: Optional[UUID] = None
     planned_date: Optional[date] = None
     meal_type: Optional[MealType] = None
@@ -41,6 +42,7 @@ class MealPlanEntryUpdate(BaseModel):
     
     class Config:
         use_enum_values = True
+        
 
 
 class MealPlanEntryDB(MealPlanEntryBase):
@@ -62,6 +64,7 @@ class MealPlanEntryDB(MealPlanEntryBase):
         use_enum_values = True
         populate_by_name = True
         arbitrary_types_allowed = True
+        
 
 
 class MealPlanEntry(MealPlanEntryBase):
@@ -74,6 +77,7 @@ class MealPlanEntry(MealPlanEntryBase):
     class Config:
         use_enum_values = True
         orm_mode = True
+        
 
 
 class MealPlanEntryWithMeal(MealPlanEntry):
@@ -82,6 +86,7 @@ class MealPlanEntryWithMeal(MealPlanEntry):
     class Config:
         use_enum_values = True
         orm_mode = True
+        
 
 
 class MealPlanPeriod(str, Enum):
@@ -90,7 +95,7 @@ class MealPlanPeriod(str, Enum):
     MONTH = "month"
 
 
-class MealPlanStatistics(BaseModel):
+class MealPlanStatistics(BaseSchema):
     period: MealPlanPeriod
     start_date: date
     end_date: date
@@ -104,3 +109,4 @@ class MealPlanStatistics(BaseModel):
     
     class Config:
         use_enum_values = True
+

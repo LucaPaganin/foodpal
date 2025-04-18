@@ -26,27 +26,22 @@ CONTAINERS = [
     # Add other containers as needed
 ]
 
-async def init_db():
+def init_db():
     """Initialize the CosmosDB database and containers."""
     try:
         logger.info(f"Connecting to {'Emulator' if settings.USE_COSMOS_EMULATOR else 'Azure'} CosmosDB at {settings.COSMOS_ENDPOINT}")
-        
         # Connect to CosmosDB
-        await cosmos_db.connect()
-        
+        cosmos_db.connect()
         # Create containers
         for container_config in CONTAINERS:
             container_id = container_config["id"]
             partition_key = container_config["partition_key"]
-            
             logger.info(f"Creating container: {container_id}")
             cosmos_db.get_container(container_id=container_id, partition_key=partition_key)
-            
         logger.info("Database initialization complete!")
-        
     except Exception as e:
         logger.error(f"Failed to initialize database: {e}")
         raise
 
 if __name__ == "__main__":
-    asyncio.run(init_db())
+    init_db()

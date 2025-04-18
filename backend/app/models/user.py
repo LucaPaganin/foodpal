@@ -1,9 +1,10 @@
 from typing import List, Optional
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import EmailStr, Field
 from datetime import datetime
+from app.schemas import BaseSchema
 
 
-class UserBase(BaseModel):
+class UserBase(BaseSchema):
     email: EmailStr
     username: str
     is_active: bool = True
@@ -14,7 +15,7 @@ class UserCreate(UserBase):
     full_name: Optional[str] = None
 
 
-class UserUpdate(BaseModel):
+class UserUpdate(BaseSchema):
     email: Optional[EmailStr] = None
     username: Optional[str] = None
     full_name: Optional[str] = None

@@ -52,36 +52,32 @@ async def get_meal_plans(
         
         # Execute the query
         meal_plans = []
-        async for plan in meal_plans_container.query_items(
+        for plan in meal_plans_container.query_items(
             query=query,
             parameters=params,
             partition_key=token_data.sub
         ):
             meal_plan_entry = MealPlanEntryDB(**plan)
-            
             # Get the associated meal
             meal_query = "SELECT * FROM c WHERE c.id = @meal_id"
             meal_params = [{"name": "@meal_id", "value": str(meal_plan_entry.meal_id)}]
-            
             meals = []
-            async for meal in meals_container.query_items(
+            for meal in meals_container.query_items(
                 query=meal_query,
                 parameters=meal_params,
                 enable_cross_partition_query=True
             ):
                 meals.append(MealDB(**meal))
-            
             # Create the combined response object
             if meals:
                 meal_plan_with_meal = MealPlanEntryWithMeal(
-                    **meal_plan_entry.dict(),
+                    **meal_plan_entry.model_dump(),
                     meal=meals[0]
                 )
                 meal_plans.append(meal_plan_with_meal)
             else:
                 # Handle case where meal doesn't exist anymore
-                meal_plans.append(MealPlanEntryWithMeal(**meal_plan_entry.dict()))
-            
+                meal_plans.append(MealPlanEntryWithMeal(**meal_plan_entry.model_dump()))
         return meal_plans
         
     except Exception as e:
@@ -103,13 +99,13 @@ async def create_meal_plan(
         
         # Create meal plan with user info
         meal_plan_db = MealPlanEntryDB(
-            **meal_plan.dict(),
+            **meal_plan.model_dump(),
             created_by=token_data.sub,
             household_id=token_data.sub  # Using user ID as household ID for now
         )
         
         # Save to database
-        await meal_plans_container.create_item(meal_plan_db.dict())
+        meal_plans_container.create_item(meal_plan_db.model_dump(by_alias=True))
         
         return meal_plan_db
         
@@ -137,7 +133,7 @@ async def get_meal_plan(
         
         # Execute query
         meal_plans = []
-        async for plan in meal_plans_container.query_items(
+        for plan in meal_plans_container.query_items(
             query=query,
             parameters=params,
             enable_cross_partition_query=True
@@ -164,7 +160,7 @@ async def get_meal_plan(
         meal_params = [{"name": "@meal_id", "value": str(meal_plan_entry.meal_id)}]
         
         meals = []
-        async for meal in meals_container.query_items(
+        for meal in meals_container.query_items(
             query=meal_query,
             parameters=meal_params,
             enable_cross_partition_query=True
@@ -174,12 +170,12 @@ async def get_meal_plan(
         # Create the combined response object
         if meals:
             return MealPlanEntryWithMeal(
-                **meal_plan_entry.dict(),
+                **meal_plan_entry.model_dump(),
                 meal=meals[0]
             )
         else:
             # Handle case where meal doesn't exist anymore
-            return MealPlanEntryWithMeal(**meal_plan_entry.dict())
+            return MealPlanEntryWithMeal(**meal_plan_entry.model_dump())
         
     except HTTPException:
         raise
@@ -207,7 +203,7 @@ async def update_meal_plan(
         
         # Execute query
         meal_plans = []
-        async for plan in meal_plans_container.query_items(
+        for plan in meal_plans_container.query_items(
             query=query,
             parameters=params,
             enable_cross_partition_query=True
@@ -230,7 +226,7 @@ async def update_meal_plan(
             )
         
         # Update the meal plan with new values
-        update_data = meal_plan_update.dict(exclude_unset=True)
+        update_data = meal_plan_update.model_dump(exclude_unset=True)
         for key, value in update_data.items():
             setattr(existing_plan, key, value)
         
@@ -238,9 +234,9 @@ async def update_meal_plan(
         existing_plan.updated_at = datetime.utcnow()
         
         # Save the updated meal plan
-        await meal_plans_container.replace_item(
+        meal_plans_container.replace_item(
             item=str(existing_plan.id), 
-            body=existing_plan.dict()
+            body=existing_plan.model_dump(by_alias=True)
         )
         
         return existing_plan
@@ -270,7 +266,7 @@ async def delete_meal_plan(
         
         # Execute query
         meal_plans = []
-        async for plan in meal_plans_container.query_items(
+        for plan in meal_plans_container.query_items(
             query=query,
             parameters=params,
             enable_cross_partition_query=True
@@ -293,7 +289,7 @@ async def delete_meal_plan(
             )
         
         # Delete the meal plan
-        await meal_plans_container.delete_item(
+        meal_plans_container.delete_item(
             item=str(existing_plan.id),
             partition_key=str(existing_plan.household_id)
         )
@@ -319,7 +315,7 @@ async def get_meal_plan_statistics(
     """
     try:
         meal_plans_container = cosmos_db.get_container("meal_plans")
-        
+        meals_container = cosmos_db.get_container("meals")
         # Set default start date if not provided
         if not start_date:
             start_date = date.today()
@@ -356,7 +352,7 @@ async def get_meal_plan_statistics(
         replaced_count = 0
         meal_counts = {}  # meal_id -> count
         
-        async for item in meal_plans_container.query_items(
+        for item in meal_plans_container.query_items(
             query=query,
             parameters=params,
             partition_key=token_data.sub
@@ -387,8 +383,7 @@ async def get_meal_plan_statistics(
         if favorite_meal_id:
             meal_query = "SELECT c.name FROM c WHERE c.id = @meal_id"
             meal_params = [{"name": "@meal_id", "value": favorite_meal_id}]
-            
-            async for meal in meals_container.query_items(
+            for meal in meals_container.query_items(
                 query=meal_query,
                 parameters=meal_params,
                 enable_cross_partition_query=True

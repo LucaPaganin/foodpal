@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await cosmos_db.connect()
+    cosmos_db.connect()
     yield
     # (Optional) Add any cleanup logic here
 

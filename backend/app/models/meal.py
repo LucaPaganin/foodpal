@@ -2,8 +2,8 @@ from datetime import datetime
 from enum import Enum
 from typing import Dict, List, Optional, Union
 from uuid import UUID, uuid4
-
-from pydantic import BaseModel, Field
+from pydantic import Field
+from app.schemas import BaseSchema
 
 
 class MealType(str, Enum):
@@ -40,9 +40,9 @@ class MealRating(int, Enum):
     EXCELLENT = 5
 
 
-class MealBase(BaseModel):
+class MealBase(BaseSchema):
     name: str
-    meal_type: MealType
+    meal_type: MealType = Field(..., alias="mealType")
     categories: List[MealCategory] = []
     recipe_id: Optional[UUID] = None
     notes: Optional[str] = None
@@ -54,15 +54,18 @@ class MealBase(BaseModel):
     
     class Config:
         use_enum_values = True
+        allow_population_by_field_name = True
+        allow_population_by_alias = True
+        
 
 
 class MealCreate(MealBase):
     pass
 
 
-class MealUpdate(BaseModel):
+class MealUpdate(BaseSchema):
     name: Optional[str] = None
-    meal_type: Optional[MealType] = None
+    meal_type: Optional[MealType] = Field(None, alias="mealType")
     categories: Optional[List[MealCategory]] = None
     recipe_id: Optional[UUID] = None
     notes: Optional[str] = None
@@ -75,6 +78,9 @@ class MealUpdate(BaseModel):
     
     class Config:
         use_enum_values = True
+        allow_population_by_field_name = True
+        allow_population_by_alias = True
+        
 
 
 class MealDB(MealBase):
@@ -84,7 +90,6 @@ class MealDB(MealBase):
     created_by: UUID
     household_id: UUID
     rating: Optional[MealRating] = None
-    
     # For CosmosDB
     pk: str = ""  # Partition key (will be set to household_id)
     
@@ -97,6 +102,9 @@ class MealDB(MealBase):
         use_enum_values = True
         populate_by_name = True
         arbitrary_types_allowed = True
+        allow_population_by_field_name = True
+        allow_population_by_alias = True
+        
 
 
 class Meal(MealBase):
@@ -110,3 +118,6 @@ class Meal(MealBase):
     class Config:
         use_enum_values = True
         orm_mode = True
+        allow_population_by_field_name = True
+        allow_population_by_alias = True
+

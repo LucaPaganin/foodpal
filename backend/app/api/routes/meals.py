@@ -48,7 +48,7 @@ async def get_meals(
         
         # Execute the query
         meals = []
-        async for meal in meals_container.query_items(
+        for meal in meals_container.query_items(
             query=query,
             parameters=params,
             partition_key=actual_household_id
@@ -76,13 +76,14 @@ async def create_meal(
         
         # Create meal with user info
         meal_db = MealDB(
-            **meal.dict(),
+            **meal.model_dump(),
             created_by=token_data.sub,
             household_id=token_data.sub  # Using user ID as household ID for now
         )
         
         # Save to database
-        await meals_container.create_item(meal_db.dict())
+        data = meal_db.model_dump(by_alias=True)
+        meals_container.create_item(data)
         
         return meal_db
         
@@ -109,7 +110,7 @@ async def get_meal(
         
         # Execute query
         meals = []
-        async for meal in meals_container.query_items(
+        for meal in meals_container.query_items(
             query=query,
             parameters=params,
             enable_cross_partition_query=True
@@ -157,7 +158,7 @@ async def update_meal(
         
         # Execute query
         meals = []
-        async for meal in meals_container.query_items(
+        for meal in meals_container.query_items(
             query=query,
             parameters=params,
             enable_cross_partition_query=True
@@ -180,7 +181,7 @@ async def update_meal(
             )
         
         # Update the meal with new values
-        update_data = meal_update.dict(exclude_unset=True)
+        update_data = meal_update.model_dump(exclude_unset=True)
         for key, value in update_data.items():
             setattr(existing_meal, key, value)
         
@@ -189,9 +190,9 @@ async def update_meal(
         existing_meal.updated_at = datetime.utcnow()
         
         # Save the updated meal
-        await meals_container.replace_item(
+        meals_container.replace_item(
             item=str(existing_meal.id), 
-            body=existing_meal.dict()
+            body=existing_meal.model_dump(by_alias=True)
         )
         
         return existing_meal
@@ -221,7 +222,7 @@ async def delete_meal(
         
         # Execute query
         meals = []
-        async for meal in meals_container.query_items(
+        for meal in meals_container.query_items(
             query=query,
             parameters=params,
             enable_cross_partition_query=True
@@ -244,7 +245,7 @@ async def delete_meal(
             )
         
         # Delete the meal
-        await meals_container.delete_item(
+        meals_container.delete_item(
             item=str(existing_meal.id),
             partition_key=str(existing_meal.household_id)
         )

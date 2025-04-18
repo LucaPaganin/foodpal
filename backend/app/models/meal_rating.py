@@ -1,13 +1,12 @@
 from datetime import datetime
 from typing import Dict, List, Optional
 from uuid import UUID, uuid4
-
-from pydantic import BaseModel, Field
-
+from pydantic import Field
 from app.models.meal import MealRating
+from app.schemas import BaseSchema
 
 
-class MealRatingBase(BaseModel):
+class MealRatingBase(BaseSchema):
     meal_id: UUID
     rating: MealRating
     comments: Optional[str] = None
@@ -15,18 +14,20 @@ class MealRatingBase(BaseModel):
     
     class Config:
         use_enum_values = True
+        
 
 
 class MealRatingCreate(MealRatingBase):
     pass
 
 
-class MealRatingUpdate(BaseModel):
+class MealRatingUpdate(BaseSchema):
     rating: Optional[MealRating] = None
     comments: Optional[str] = None
     
     class Config:
         use_enum_values = True
+        
 
 
 class MealRatingDB(MealRatingBase):
@@ -48,6 +49,7 @@ class MealRatingDB(MealRatingBase):
         use_enum_values = True
         populate_by_name = True
         arbitrary_types_allowed = True
+        
 
 
 class MealRating(MealRatingBase):
@@ -60,9 +62,10 @@ class MealRating(MealRatingBase):
     class Config:
         use_enum_values = True
         orm_mode = True
+        
 
 
-class MealRatingStatistics(BaseModel):
+class MealRatingStatistics(BaseSchema):
     meal_id: UUID
     meal_name: str
     average_rating: float

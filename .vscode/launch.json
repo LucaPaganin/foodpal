@@ -68,21 +68,6 @@
         "PYTHONPATH": "${workspaceFolder}/backend",
         "DEBUG": "true",
         "DB_CONNECTION_STRING": "local_development_connection_string"
-      },
-      "preLaunchTask": "Start CosmosDB Emulator"
-    },
-    {
-      "name": "Debug Full Stack",
-      "type": "chrome",
-      "request": "launch",
-      "url": "http://localhost:3000",
-      "webRoot": "${workspaceFolder}/frontend/src",
-      "sourceMapPathOverrides": {
-        "webpack:///src/*": "${webRoot}/*"
-      },
-      "preLaunchTask": "Start Full Stack Dev Environment",
-      "presentation": {
-        "group": "fullstack"
       }
     }
   ],

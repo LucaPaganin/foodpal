@@ -7,7 +7,7 @@ import urllib3
 from typing import Dict, List, Optional, Union
 import tempfile
 
-from azure.cosmos import CosmosClient, PartitionKey
+from azure.cosmos import CosmosClient, PartitionKey, ContainerProxy
 from azure.cosmos.exceptions import CosmosResourceNotFoundError
 
 from app.core.config import settings
@@ -50,35 +50,28 @@ class CosmosDB:
             logger.error(f"Error downloading emulator certificate: {e}")
             return None
         
-    async def connect(self):
+    def connect(self):
         """Connect to Azure Cosmos DB."""
         try:
             connection_kwargs = {
                 "url": settings.COSMOS_ENDPOINT,
                 "credential": settings.COSMOS_KEY
             }
-            
-            # If using the emulator, configure SSL
             if settings.USE_COSMOS_EMULATOR:
                 logger.info("Connecting to CosmosDB Emulator")
                 connection_kwargs["connection_verify"] = False
             else:
                 logger.info("Connecting to Azure CosmosDB")
-                
-            # Initialize Cosmos client
             self.client = CosmosClient(**connection_kwargs)
-            
-            # Create or get database
             self.database = self.client.create_database_if_not_exists(
                 id=settings.COSMOS_DATABASE
             )
-            
             logger.info(f"Connected to {'emulator' if settings.USE_COSMOS_EMULATOR else 'Azure'} Cosmos DB: {settings.COSMOS_DATABASE}")
         except Exception as e:
             logger.error(f"Failed to connect to Cosmos DB: {e}")
             raise
     
-    def get_container(self, container_id: str, partition_key: str = "/id"):
+    def get_container(self, container_id: str, partition_key: str = "/id") -> ContainerProxy:
         """Get or create a container in the database."""
         if container_id not in self.containers:
             try:
@@ -94,7 +87,7 @@ class CosmosDB:
         
         return self.containers[container_id]
     
-    async def create_item(self, container_id: str, item: Dict):
+    def create_item(self, container_id: str, item: Dict):
         """Create an item in a container."""
         container = self.get_container(container_id)
         try:
@@ -104,7 +97,7 @@ class CosmosDB:
             logger.error(f"Failed to create item in {container_id}: {e}")
             raise
     
-    async def get_item(self, container_id: str, item_id: str, partition_key: str = None):
+    def get_item(self, container_id: str, item_id: str, partition_key: str = None):
         """Get an item from a container by ID."""
         container = self.get_container(container_id)
         try:
@@ -116,7 +109,7 @@ class CosmosDB:
             logger.error(f"Failed to get item {item_id} from {container_id}: {e}")
             raise
     
-    async def update_item(self, container_id: str, item: Dict):
+    def update_item(self, container_id: str, item: Dict):
         """Update an item in a container."""
         container = self.get_container(container_id)
         try:
@@ -126,7 +119,7 @@ class CosmosDB:
             logger.error(f"Failed to update item in {container_id}: {e}")
             raise
     
-    async def delete_item(self, container_id: str, item_id: str, partition_key: str = None):
+    def delete_item(self, container_id: str, item_id: str, partition_key: str = None):
         """Delete an item from a container by ID."""
         container = self.get_container(container_id)
         try:
@@ -136,7 +129,7 @@ class CosmosDB:
             logger.error(f"Failed to delete item {item_id} from {container_id}: {e}")
             raise
     
-    async def query_items(self, container_id: str, query: str, parameters: Optional[Dict] = None):
+    def query_items(self, container_id: str, query: str, parameters: Optional[Dict] = None):
         """Query items in a container."""
         container = self.get_container(container_id)
         try:
@@ -156,6 +149,7 @@ cosmos_db = CosmosDB()
 
 
 # Standalone function for accessing containers
-async def initialize():
+
+def initialize():
     """Initialize the database connection."""
-    await cosmos_db.connect()
+    cosmos_db.connect()
