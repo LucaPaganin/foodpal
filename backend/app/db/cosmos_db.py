@@ -154,11 +154,8 @@ class CosmosDB:
 # Create a singleton instance
 cosmos_db = CosmosDB()
 
+
 # Standalone function for accessing containers
 async def initialize():
     """Initialize the database connection."""
     await cosmos_db.connect()
-
-async def get_container(container_id: str, partition_key: str = "/id"):
-    """Get a container from the database."""
-    return cosmos_db.get_container(container_id, partition_key)

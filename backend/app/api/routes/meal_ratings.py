@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from app.core.oidc import get_token_data, TokenData
 from app.models.meal_rating import MealRatingBase, MealRatingCreate, MealRatingUpdate, MealRatingDB
 from app.models.meal_rating import MealRating, MealRatingStatistics
-from app.db.cosmos_db import get_container
+from app.db.cosmos_db import cosmos_db
 
 router = APIRouter(
     prefix="/meal-ratings",
@@ -24,7 +24,7 @@ async def create_meal_rating(
     Create a new meal rating.
     """
     try:
-        ratings_container = await get_container("meal_ratings")
+        ratings_container = cosmos_db.get_container("meal_ratings")
         
         # Create rating with user info
         rating_db = MealRatingDB(
@@ -56,7 +56,7 @@ async def get_meal_ratings(
     Get all ratings for a specific meal.
     """
     try:
-        ratings_container = await get_container("meal_ratings")
+        ratings_container = cosmos_db.get_container("meal_ratings")
         
         # Query to get all ratings for this meal
         query = "SELECT * FROM c WHERE c.household_id = @household_id AND c.meal_id = @meal_id"
@@ -91,8 +91,8 @@ async def get_meal_rating_statistics(
     Get rating statistics for a specific meal.
     """
     try:
-        ratings_container = await get_container("meal_ratings")
-        meals_container = await get_container("meals")
+        ratings_container = cosmos_db.get_container("meal_ratings")
+        meals_container = cosmos_db.get_container("meals")
         
         # Get meal name first
         meal_query = "SELECT c.name FROM c WHERE c.id = @meal_id"
@@ -167,7 +167,7 @@ async def delete_meal_rating(
     Delete a specific meal rating by ID.
     """
     try:
-        ratings_container = await get_container("meal_ratings")
+        ratings_container = cosmos_db.get_container("meal_ratings")
         
         # First get the existing rating
         query = "SELECT * FROM c WHERE c.id = @id"
@@ -223,8 +223,8 @@ async def update_meal_average_rating(meal_id: UUID, household_id: str):
     Helper function to update a meal's average rating based on all ratings.
     """
     try:
-        ratings_container = await get_container("meal_ratings")
-        meals_container = await get_container("meals")
+        ratings_container = cosmos_db.get_container("meal_ratings")
+        meals_container = cosmos_db.get_container("meals")
         
         # Query to get all ratings for this meal
         query = "SELECT c.rating FROM c WHERE c.household_id = @household_id AND c.meal_id = @meal_id"

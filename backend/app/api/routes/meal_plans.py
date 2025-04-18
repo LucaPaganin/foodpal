@@ -6,7 +6,7 @@ from app.core.oidc import get_token_data, TokenData
 from app.models.meal_plan import MealPlanEntryCreate, MealPlanEntryUpdate, MealPlanEntryDB
 from app.models.meal_plan import MealPlanEntry, MealPlanEntryWithMeal, MealPlanPeriod, MealPlanStatistics
 from app.models.meal import MealDB
-from app.db.cosmos_db import get_container
+from app.db.cosmos_db import cosmos_db
 
 router = APIRouter(
     prefix="/meal-plans",
@@ -28,8 +28,8 @@ async def get_meal_plans(
     Get all meal plans within a date range with optional filtering.
     """
     try:
-        meal_plans_container = await get_container("meal_plans")
-        meals_container = await get_container("meals")
+        meal_plans_container = cosmos_db.get_container("meal_plans")
+        meals_container = cosmos_db.get_container("meals")
         
         # Set default dates if not provided
         if not start_date:
@@ -99,7 +99,7 @@ async def create_meal_plan(
     Create a new meal plan entry.
     """
     try:
-        meal_plans_container = await get_container("meal_plans")
+        meal_plans_container = cosmos_db.get_container("meal_plans")
         
         # Create meal plan with user info
         meal_plan_db = MealPlanEntryDB(
@@ -128,8 +128,8 @@ async def get_meal_plan(
     Get a specific meal plan entry by ID.
     """
     try:
-        meal_plans_container = await get_container("meal_plans")
-        meals_container = await get_container("meals")
+        meal_plans_container = cosmos_db.get_container("meal_plans")
+        meals_container = cosmos_db.get_container("meals")
         
         # Query by ID
         query = "SELECT * FROM c WHERE c.id = @id"
@@ -199,7 +199,7 @@ async def update_meal_plan(
     Update a specific meal plan by ID.
     """
     try:
-        meal_plans_container = await get_container("meal_plans")
+        meal_plans_container = cosmos_db.get_container("meal_plans")
         
         # First get the existing meal plan
         query = "SELECT * FROM c WHERE c.id = @id"
@@ -262,7 +262,7 @@ async def delete_meal_plan(
     Delete a specific meal plan by ID.
     """
     try:
-        meal_plans_container = await get_container("meal_plans")
+        meal_plans_container = cosmos_db.get_container("meal_plans")
         
         # First get the existing meal plan
         query = "SELECT * FROM c WHERE c.id = @id"
@@ -318,7 +318,7 @@ async def get_meal_plan_statistics(
     Get meal plan statistics for a specific period.
     """
     try:
-        meal_plans_container = await get_container("meal_plans")
+        meal_plans_container = cosmos_db.get_container("meal_plans")
         
         # Set default start date if not provided
         if not start_date:
@@ -385,7 +385,6 @@ async def get_meal_plan_statistics(
         
         # Get the name of the favorite meal if there is one
         if favorite_meal_id:
-            meals_container = await get_container("meals")
             meal_query = "SELECT c.name FROM c WHERE c.id = @meal_id"
             meal_params = [{"name": "@meal_id", "value": favorite_meal_id}]
             

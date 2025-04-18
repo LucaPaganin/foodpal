@@ -3,7 +3,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from app.core.oidc import get_token_data, TokenData
 from app.models.meal import Meal, MealCreate, MealUpdate, MealDB, MealType, MealCategory
-from app.db.cosmos_db import get_container
+from app.db.cosmos_db import cosmos_db
 
 router = APIRouter(
     prefix="/meals",
@@ -25,7 +25,7 @@ async def get_meals(
     Get all meals with optional filtering.
     """
     try:
-        meals_container = await get_container("meals")
+        meals_container = cosmos_db.get_container("meals")
         
         # Base query to filter by household ID
         query = "SELECT * FROM c WHERE "
@@ -72,7 +72,7 @@ async def create_meal(
     Create a new meal.
     """
     try:
-        meals_container = await get_container("meals")
+        meals_container = cosmos_db.get_container("meals")
         
         # Create meal with user info
         meal_db = MealDB(
@@ -101,7 +101,7 @@ async def get_meal(
     Get a specific meal by ID.
     """
     try:
-        meals_container = await get_container("meals")
+        meals_container = cosmos_db.get_container("meals")
         
         # Query by ID
         query = "SELECT * FROM c WHERE c.id = @id"
@@ -149,7 +149,7 @@ async def update_meal(
     Update a specific meal by ID.
     """
     try:
-        meals_container = await get_container("meals")
+        meals_container = cosmos_db.get_container("meals")
         
         # First get the existing meal
         query = "SELECT * FROM c WHERE c.id = @id"
@@ -213,7 +213,7 @@ async def delete_meal(
     Delete a specific meal by ID.
     """
     try:
-        meals_container = await get_container("meals")
+        meals_container = cosmos_db.get_container("meals")
         
         # First get the existing meal
         query = "SELECT * FROM c WHERE c.id = @id"
