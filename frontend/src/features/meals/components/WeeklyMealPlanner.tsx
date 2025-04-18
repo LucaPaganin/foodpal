@@ -116,9 +116,9 @@ const WeeklyMealPlanner: React.FC = () => {
           </Box>
         </Box>
         
-        <Grid container spacing={1}>
+        <Grid container spacing={1} columns={8}>
           {/* Header row with days */}
-          <Box >
+          <Grid size={{ xs: 1 }}>
             <Paper
               sx={{
                 height: '60px',
@@ -131,10 +131,9 @@ const WeeklyMealPlanner: React.FC = () => {
             >
               <Typography variant="subtitle1">{t('Meal Type')}</Typography>
             </Paper>
-          </Box>
-          
+          </Grid>
           {weekDays.map((day) => (
-            <Box key={day.toISOString()}>
+            <Grid size={{ xs: 1 }} key={day.toISOString()}>
               <Paper
                 elevation={isSameDay(day, new Date()) ? 8 : 1}
                 sx={{
@@ -154,13 +153,13 @@ const WeeklyMealPlanner: React.FC = () => {
                   {format(day, 'd MMM', { locale })}
                 </Typography>
               </Paper>
-            </Box>
+            </Grid>
           ))}
 
           {/* Meal type rows */}
           {MEAL_TYPES.map((mealType) => (
             <React.Fragment key={mealType}>
-              <Box >
+              <Grid size={{ xs: 1 }}>
                 <Paper
                   sx={{
                     height: '150px',
@@ -172,11 +171,9 @@ const WeeklyMealPlanner: React.FC = () => {
                 >
                   <Typography variant="subtitle1">{t(mealType)}</Typography>
                 </Paper>
-              </Box>
-              
-              {/* Meal cells for each day */}
+              </Grid>
               {weekDays.map((day) => (
-                <Box key={`${mealType}-${day.toISOString()}`}>
+                <Grid size={{ xs: 1 }} key={`${mealType}-${day.toISOString()}`}>
                   <Paper 
                     sx={{ 
                       height: '150px', 
@@ -192,7 +189,6 @@ const WeeklyMealPlanner: React.FC = () => {
                         mealPlanEntry={entry}
                       />
                     ))}
-                    
                     <Button 
                       size="small" 
                       startIcon={<AddIcon />}
@@ -202,7 +198,7 @@ const WeeklyMealPlanner: React.FC = () => {
                       {t('Add Meal')}
                     </Button>
                   </Paper>
-                </Box>
+                </Grid>
               ))}
             </React.Fragment>
           ))}

@@ -179,7 +179,7 @@ const MealManager: React.FC = () => {
         </Box>
         
         <Grid container spacing={2} sx={{ mb: 3 }}>
-          <Box>
+          <Grid item size={{ xs: 12, sm: 6, md: 4 }}>
             <TextField
               fullWidth
               variant="outlined"
@@ -194,8 +194,8 @@ const MealManager: React.FC = () => {
                 )
               }}
             />
-          </Box>
-          <Box>
+          </Grid>
+          <Grid item size={{ xs: 12, sm: 6, md: 4 }}>
             <FormControl fullWidth>
               <InputLabel>{t('Filter by Type')}</InputLabel>
               <Select
@@ -210,8 +210,8 @@ const MealManager: React.FC = () => {
                 <MenuItem value="snack">{t('snack')}</MenuItem>
               </Select>
             </FormControl>
-          </Box>
-          <Box>
+          </Grid>
+          <Grid item size={{ xs: 12, sm: 12, md: 4 }}>
             <FormControl fullWidth>
               <InputLabel>{t('Filter by Category')}</InputLabel>
               <Select
@@ -232,7 +232,7 @@ const MealManager: React.FC = () => {
                 <MenuItem value="quick">{t('quick')}</MenuItem>
               </Select>
             </FormControl>
-          </Box>
+          </Grid>
         </Grid>
         
         {loading ? (
@@ -246,7 +246,7 @@ const MealManager: React.FC = () => {
         ) : (
           <Grid container spacing={2}>
             {filteredMeals.map((meal) => (
-              <Box>
+              <Grid item size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={meal.id}>
                 <Card>
                   <CardContent>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -326,7 +326,7 @@ const MealManager: React.FC = () => {
                     </Tooltip>
                   </CardActions>
                 </Card>
-              </Box>
+              </Grid>
             ))}
           </Grid>
         )}

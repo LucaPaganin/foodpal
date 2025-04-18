@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
@@ -16,12 +17,19 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await cosmos_db.connect()
+    yield
+    # (Optional) Add any cleanup logic here
+
 app = FastAPI(
     title="FoodPal API",
     description="Backend API for the FoodPal meal planner application",
     version="0.1.0",
     docs_url=None,  # Disable default docs
     redoc_url=None,  # Disable default redoc
+    lifespan=lifespan,
 )
 
 # Configure CORS
