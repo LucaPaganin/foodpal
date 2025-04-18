@@ -79,19 +79,20 @@ function AppContent() {
               <Route path="/auth/callback" element={<AuthCallback />} />
               
               {/* All other pages with MainLayout and protection */}
-              <Route path="/" element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <Routes>
-                      <Route path="/" element={<HomePage />} />
-                      <Route path="/meals" element={<MealPlanningPage />} />
-                      <Route path="/recipes" element={<div>Recipe Management</div>} />
-                      <Route path="/ingredients" element={<div>Ingredient Management</div>} />
-                      <Route path="/shopping" element={<div>Shopping List</div>} />
-                    </Routes>
-                  </MainLayout>
-                </ProtectedRoute>
-              } />
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<HomePage />} />
+                <Route path="meals" element={<MealPlanningPage />} />
+                <Route path="recipes" element={<div>Recipe Management</div>} />
+                <Route path="ingredients" element={<div>Ingredient Management</div>} />
+                <Route path="shopping" element={<div>Shopping List</div>} />
+              </Route>
               <Route path="*" element={<div>Page Not Found</div>} />
             </Routes>
           </AuthInitializer>

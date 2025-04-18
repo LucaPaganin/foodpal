@@ -1,15 +1,16 @@
-import * as React from 'react';
+import React from 'react';
+import { Outlet } from 'react-router-dom';
 import { Box, Container, AppBar, Toolbar, Typography, useTheme } from '@mui/material';
 import ThemeToggle from '../ui/ThemeToggle';
 import LanguageSwitcher from '../ui/LanguageSwitcher';
 import UserDisplay from '../auth/UserDisplay';
 import { useTranslation } from 'react-i18next';
 
-interface MainLayoutProps {
-  children: React.ReactNode;
+export interface MainLayoutProps {
+  children?: React.ReactNode; // Make children optional
 }
 
-const MainLayout = ({ children }: MainLayoutProps) => {
+const MainLayout = (props: MainLayoutProps) => {
   const theme = useTheme();
   const { t } = useTranslation();
   
@@ -30,7 +31,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
         py: 3,
         bgcolor: theme.palette.background.default
       }}>
-        {children}
+        <Outlet />
       </Container>
       <Box component="footer" sx={{ 
         py: 2, 
