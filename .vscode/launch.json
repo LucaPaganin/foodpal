@@ -55,14 +55,14 @@
     },
     {
       "name": "Debug Full Stack",
-      "type": "node",
+      "type": "chrome",
       "request": "launch",
-      "preLaunchTask": "Start Full Stack Dev Environment",
-      "serverReadyAction": {
-        "pattern": "started server on .+, url: (https?://.+)",
-        "uriFormat": "%s",
-        "action": "openExternally"
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/frontend/src",
+      "sourceMapPathOverrides": {
+        "webpack:///src/*": "${webRoot}/*"
       },
+      "preLaunchTask": "Start Full Stack Dev Environment",
       "presentation": {
         "group": "fullstack"
       }

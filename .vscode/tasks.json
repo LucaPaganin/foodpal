@@ -18,7 +18,7 @@
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
-        "panel": "shared",
+        "panel": "new",
         "group": "develop"
       },
       "detail": "Start CosmosDB Emulator in Docker container"
@@ -37,7 +37,7 @@
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
-        "panel": "shared",
+        "panel": "new",
         "group": "develop"
       },
       "detail": "Initialize CosmosDB containers for development",
@@ -48,13 +48,22 @@
       "type": "npm",
       "script": "start",
       "path": "frontend/",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated",
-        "group": "develop"
-      },
-      "detail": "Start React development server"
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": [
+          {
+            "regexp": ".",
+            "file": 1,
+            "location": 2,
+            "message": 3
+          }
+        ],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Starting the development server",
+          "endsPattern": "No issues found."
+        }
+      }
     },
     {
       "label": "Build Frontend",
@@ -96,7 +105,7 @@
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
-        "panel": "dedicated",
+        "panel": "new",
         "group": "develop"
       },
       "detail": "Start FastAPI development server with hot reload"
